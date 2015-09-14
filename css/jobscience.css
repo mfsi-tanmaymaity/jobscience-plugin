@@ -1,0 +1,168 @@
+/**
+ * Name			: jobscience.css
+ * Description	: This file is for all CSS styling for this plugin.
+ * Author		: JobScience
+ * Date			: 04/29/2015 (MM/DD/YYYY)
+ **/
+
+/* Generate Shortcode page style  */
+#js-shortcode-generator .js-shortcode-select {
+	float: left;
+}
+#js-shortcode-generator .js-shortcode-select select {
+	height: 250px;
+	min-width: 200px;
+	margin-right: 20px;
+}
+#js-shortcode-result, .jobscience-pagination-section {
+	clear: both;
+	padding-top: 20px;
+}
+#js-shortcode-result-field {
+	width: 420px;
+}
+/* End */
+/* Job listing page style */
+.js-job .horizontally.js-job-detail, .jobscience-pagination-section .js-total-job, .js-total-job p, .js-single-job-title,#js-back-job-page {
+    float: left;
+}
+.jobscience-result,.jobscience-result-heading,.js-job-clear-float {
+    clear: both;
+}
+.jobscience-shortcode-body .js-pagination, .js-single-job-location, #js-single-page-apply {
+    float: right;
+}
+.js-pagination button, .js-total-job p {
+	font-size: 12px;
+}
+.jobscience-result-heading {
+	border-bottom: 1px solid;
+}
+.js-hidden, .jobscience-result-heading.vertically {
+	display: none;
+}
+.js-pagination .js-pagination-item, #js-back-job-button, #js-all-job button, .js-pagination .js-pagination-more {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    color: #0000ff;
+    font-weight: normal;
+    margin: 0;
+    padding: 2px;
+	text-transform: none;
+    vertical-align: top;
+}
+.js-pagination-more {
+    cursor: default;
+}
+.js-current {
+	color: #000000 !important;
+}
+.jobscience-search div {
+    float: left;
+	padding-top: 10px;
+}
+.jobscience-search input, .jobscience-search select, .jobscience-search button {
+	font-size: 13px;
+}
+.js-search-text, .js-search-department, .js-search-location, .js-search-function {
+    padding-right: 20px;
+}
+.jobscience-search select, .jobscience-search input, .jobscience-search button {
+    height: 30px;
+}
+.js-search-submit button {
+    padding: 2px 15px;
+	margin: 0px;
+}
+.js-styling-error {
+	border: 2px solid red !important;
+}
+.horizontally.js-job-detail, .js-job.vertically {
+    padding: 10px 5px;
+}
+.js-job-detail p {
+    padding: 0;
+	margin: 0;
+}
+.jobscience-result .js-job {
+    border-bottom: 1px solid;
+}
+#js-job-col-last.horizontally.js-job-detail {
+    text-align: center;
+}
+#js-single-job {
+    padding-top: 10px;
+}
+.js-single-job-left {
+    float: left;
+    width: 20%;
+	padding-right: 5px;
+}
+.js-single-job-right {
+    float: right;
+    width: 78%;
+}
+.js-single-job-heading {
+    border-bottom: 1px solid;
+}
+.js-single-job-body {
+    padding-top: 10px;
+}
+.js-single-job-title {
+	font-size: 15px;
+}
+#js-single-job-footer {
+    border-top: 2px solid;
+    clear: both;
+    padding-top: 5px;
+}
+.js-no-job {
+    padding: 15px;
+}
+/* Ajax loader style */
+.js-page-loader {
+    background: url("../images/ajax-loader.gif") no-repeat scroll center center #fff;
+    display: none;
+    height: 100%;
+    opacity: 0.5;
+    position: fixed;
+    width: 100%;
+    z-index: 999999;
+}
+.forth-col > input {
+    width: 100%;
+	max-width: 150px;
+}
+/* Single Job Template style */
+#jobscience-single-job-template .js-job-formats {
+    float: left;
+    margin: 0 10px;
+}
+#jobscience-single-job-template .js-job-formats div {
+    text-align: center;
+}
+#jobscience-single-job-template p#js-single-job-format-submit, #jobscience-single-job-template p#js-single-job-template-submit {
+    clear: both;
+    padding-top: 10px;
+}
+.js-template-column {
+    float: left;
+}
+.js-template-column .js_inside {
+    background-color: #c7c7c7;
+    border: 1px dashed;
+    min-height: 50px;
+    margin: 10px;
+    padding: 5px;
+}
+.js-section-width.js-number-field, .js-template-add-field {
+    max-width: 100%;
+}
+#js-create-template .js-template-row {
+    clear: both;
+}
+.js-template-job-field {
+    border: 1px solid;
+    max-width: 250px;
+    padding: 10px 15px;
+    cursor: move;
+}
