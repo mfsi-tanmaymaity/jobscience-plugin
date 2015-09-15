@@ -438,9 +438,63 @@ function jobscience_get_single_job() {
 	}
 
 	// Get the template format.
-	$format = isset( $current_template['format'] );
+	$format = isset( $current_template['format'] ) ? $current_template['format'] : 1;
 	// Call the function to create the format array as per the $format.
 	$format_array = jobscience_get_template_formate( $format );
+	if ( is_array( $format_array ) ) {
+		$section_count = 1;
+		ob_start();
+?>
+		<div id="js-single-job">
+		<?php
+			foreach ( $format_array as $key => $value ) {
+		?>
+				<div id="js-single-job-row-<?php echo $key; ?>" class="js-single-job-row" >
+				<?php
+					if ( is_array( $value ) ) {
+						foreach ( $value as $key1 => $value1 ) {
+							// Get the width of current section from current template or from the template format array.
+							$width = isset( $current_template['tempalte_data'][$section_count]['width']) ? $current_template['tempalte_data'][$section_count]['width'] : $value1;
+							// Create Added Fields section for the current template part.
+							$fields = isset( $current_template['tempalte_data'][$section_count]['fields'] ) ? $current_template['tempalte_data'][$section_count]['fields'] : array();
+				?>
+							<div class="js-single-job-col-<?php echo $key1; ?> js-single-job-column" style="width: <?php echo $width; ?>%;" >
+								<div class="js_inside">
+								<?php
+									if ( is_array( $fields ) ) {
+										foreach ( $fields as $key2 => $field ) {
+											if ( 'title' == $field ) {
+												$meta_value = get_the_title( $job_post_id );
+											} else if ( 'description' == $field ) {
+												$meta_value = get_post_field( 'post_content', $job_post_id );
+											} else {
+												// Get the meta key.
+												$job_meta_key = jobscience_create_meta_key( $field );
+												$meta_value = get_post_meta( $job_post_id, $job_meta_key, true );
+											}
+								?>
+											<p class="js-single-job-field<?php echo $key2; ?>" ><?php echo $meta_value; ?></p>
+								<?php
+										}
+									}
+								?>
+								</div>
+							</div>
+				<?php
+							$section_count++;
+						}
+					}
+				?>
+				</div>
+		<?php
+			}
+		?>
+			<p id="js-back-job-page"><button id="js-back-job-button" value="">Back to Jobs</button></p>
+		</div>
+
+<?php
+		$output1 = ob_get_clean();
+	}
 
 	// If the post type is jobscience_job, then create the html.
 	$output .= '<div id="js-single-job"><div class="js-single-job-heading"><div class="js-single-job-title">';
@@ -491,7 +545,7 @@ function jobscience_get_single_job() {
 		$output .= '<p id="js-single-page-apply"><a href="' . $apply_link . '" target="_blank" ><button>Apply</button></a></p>';
 	$output .= '</div><div class="js-job-clear-float"></div></div>';
 
-	echo $output;
+	echo $output1;
 	wp_die();
 }
 

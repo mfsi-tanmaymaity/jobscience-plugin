@@ -130,7 +130,8 @@ echo '<pre>'; print_r($rss_tag); echo '</pre>';
 										if ( false !== $custom_name ) {
 											$added_fields .= '<p class="js-template-job-field">';
 											$added_fields .= '<input type="hidden" name="js_section[' . $section_count . '][fields][]" value="' . $field . '" />';
-											$added_fields .= '<span><strong>' . $custom_name . '</strong></span>';
+											$added_fields .= '<span class="js-template-field-title"><strong>' . $custom_name . '</strong></span>';
+											$added_fields .= '<span class="js-template-field-delete"><img src="' . plugins_url( '../images/delete.png', __FILE__ ) . '" class="js-template-field-delete-img" /><span>';
 											$added_fields .= '</p>';
 										}
 									}

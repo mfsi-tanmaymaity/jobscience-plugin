@@ -174,7 +174,7 @@ jQuery( document ).ready( function() {
 		}
 	});
 
-	// On blur auto resize the div tags on the Template.
+	// On blur auto resize the div on the Template.
 	jQuery( ".js-section-width" ).blur( function() {
 		var width = jQuery(this).val() + '%';
 		jQuery(this).parents( ".js-template-column" ).css( 'width', width );
@@ -191,10 +191,16 @@ jQuery( document ).ready( function() {
 			// Add one hidden field with the selected field data.
 			new_field += '<input type="hidden" name="js_section[' + index + '][fields][]" value="' + jQuery(this).val() + '" />';
 			new_field += '<span><strong>' + jQuery("option:selected", jQuery(this)).text() + '</strong></span>';
-
+			new_field += '<span class="js-template-field-delete"><img src="../wp-content/plugins/job-manager-jobscience/images/delete.png" class="js-template-field-delete-img" /><span>'
 			new_field += '</p>';
 			jQuery(this).parent('p').prev("div.js-template-added-fields").append(new_field);
+			jQuery(this).val('');
 		}
+	});
+
+	// Delete fields from Single Page templete.
+	jQuery("#js-create-template").on("click", ".js-template-field-delete-img", function(){
+		jQuery(this).parents('.js-template-job-field').remove();
 	});
 
 	jQuery(".js-template-added-fields").sortable({

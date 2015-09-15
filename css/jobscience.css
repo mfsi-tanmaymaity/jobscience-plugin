@@ -144,7 +144,7 @@
     clear: both;
     padding-top: 10px;
 }
-.js-template-column {
+.js-template-column, .js-single-job-column {
     float: left;
 }
 .js-template-column .js_inside {
@@ -165,4 +165,8 @@
     max-width: 250px;
     padding: 10px 15px;
     cursor: move;
+}
+.js-template-job-field .js-template-field-delete {
+    float: right;
+    cursor: pointer;
 }
