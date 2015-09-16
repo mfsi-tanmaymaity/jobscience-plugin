@@ -20,6 +20,8 @@ require_once( JS_PLUGIN_DIR . '/includes/jobscience-shortcode.php' );
  */
 function jobscience_add_js_css_file() {
 	wp_enqueue_script( 'jquery-ui-sortable' );
+	wp_enqueue_style( 'wp-color-picker' );
+	wp_enqueue_script( 'wp-color-picker');
 	// Include the js file.
 	wp_enqueue_script( 'jobscience-js', plugins_url( '/js/custom.js', __FILE__ ), array( 'jquery' ) );
 	// Include css file.
@@ -464,17 +466,16 @@ function jobscience_get_single_job() {
 									if ( is_array( $fields ) ) {
 										foreach ( $fields as $key2 => $field ) {
 											if ( 'title' == $field ) {
-												$meta_value = get_the_title( $job_post_id );
+												echo '<p class="js-single-job-field' . $key2 . '" >' . get_the_title( $job_post_id ) . '</p>';
 											} else if ( 'description' == $field ) {
 												$meta_value = get_post_field( 'post_content', $job_post_id );
+												echo '<div class="js-single-job-field' . $key2 . '" >' . $meta_value . '</div>';
 											} else {
 												// Get the meta key.
 												$job_meta_key = jobscience_create_meta_key( $field );
 												$meta_value = get_post_meta( $job_post_id, $job_meta_key, true );
+												echo '<p class="js-single-job-field' . $key2 . '" >' . $meta_value . '</p>';
 											}
-								?>
-											<p class="js-single-job-field<?php echo $key2; ?>" ><?php echo $meta_value; ?></p>
-								<?php
 										}
 									}
 								?>
@@ -485,11 +486,17 @@ function jobscience_get_single_job() {
 						}
 					}
 				?>
+				<div class="clear"></div>
 				</div>
 		<?php
 			}
 		?>
-			<p id="js-back-job-page"><button id="js-back-job-button" value="">Back to Jobs</button></p>
+			<div id="js-single-job-footer">
+				<p id="js-back-job-page"><button id="js-back-job-button" value="">Back to Jobs</button></p>
+				<?php $apply_link = get_post_meta( $job_post_id, 'js_job_siteURL', true ); ?>
+				<p id="js-single-page-apply"><a href="<?php echo $apply_link ?>" target="_blank" ><button>Apply</button></a></p>
+			</div>
+			<div class="js-job-clear-float"></div>
 		</div>
 
 <?php

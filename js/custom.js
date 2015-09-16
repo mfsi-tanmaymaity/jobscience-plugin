@@ -184,15 +184,16 @@ jQuery( document ).ready( function() {
 	jQuery( ".js-template-add-field", "#js-create-template" ).change( function() {
 		if( '' !== jQuery(this).val() ) {
 			// Create new <p> tag for the field.
-			var new_field = '<p class="js-template-job-field">';
+			var new_field = '<div class="js-template-job-field"><div>';
 
 			// Get the index of the section, add +1 because it start from 0.
 			var index = jQuery(".js-template-add-field", "#js-create-template").index(jQuery(this)) + 1;
 			// Add one hidden field with the selected field data.
 			new_field += '<input type="hidden" name="js_section[' + index + '][fields][]" value="' + jQuery(this).val() + '" />';
-			new_field += '<span><strong>' + jQuery("option:selected", jQuery(this)).text() + '</strong></span>';
-			new_field += '<span class="js-template-field-delete"><img src="../wp-content/plugins/job-manager-jobscience/images/delete.png" class="js-template-field-delete-img" /><span>'
-			new_field += '</p>';
+			new_field += '<div class="js-template-field-title"><strong>' + jQuery("option:selected", jQuery(this)).text() + '</strong></div>';
+			new_field += '<div class="js-template-field-delete"><img src="../wp-content/plugins/job-manager-jobscience/images/delete.png" class="js-template-field-delete-img" /></div></div>';
+			new_field += '<div class="js-template-field-style"><a class="js-templete-edit-style">Edit Style</a></div>'
+			new_field += '</div>';
 			jQuery(this).parent('p').prev("div.js-template-added-fields").append(new_field);
 			jQuery(this).val('');
 		}
@@ -202,6 +203,13 @@ jQuery( document ).ready( function() {
 	jQuery("#js-create-template").on("click", ".js-template-field-delete-img", function(){
 		jQuery(this).parents('.js-template-job-field').remove();
 	});
+
+	// Open/hide/add the "Edit Style" section.
+	jQuery("#js-create-template").on("click", ".js-templete-edit-style", function(e){
+		e.preventDefault();
+	});
+
+	//jQuery('.js-template-field-color').wpColorPicker();
 
 	jQuery(".js-template-added-fields").sortable({
 		item: ".js-template-job-field",

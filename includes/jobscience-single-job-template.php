@@ -37,7 +37,7 @@
 				'tempalte_data' =>	$template_data,
 			);
 		update_option( 'js-job-template', $js_single_template );
-		echo '<pre>'; print_r($js_single_template); echo '</pre>';
+		//echo '<pre>'; print_r($js_single_template); echo '</pre>';
 	}
 
 	// Get the current template data.
@@ -90,8 +90,8 @@
 
 			// Get the rss tags name from option table.
 			$rss_tag = get_option( 'js-rss-tag' );
-echo '<pre>'; print_r($current_template); echo '</pre>';
-echo '<pre>'; print_r($rss_tag); echo '</pre>';
+//echo '<pre>'; print_r($current_template); echo '</pre>';
+//echo '<pre>'; print_r($rss_tag); echo '</pre>';
 			// Run loop.
 			if ( is_array( $rss_tag ) ) {
 				foreach ( $rss_tag  as $key => $value ) {
@@ -128,11 +128,16 @@ echo '<pre>'; print_r($rss_tag); echo '</pre>';
 										}
 
 										if ( false !== $custom_name ) {
-											$added_fields .= '<p class="js-template-job-field">';
+											$added_fields .= '<div class="js-template-job-field"><div>';
 											$added_fields .= '<input type="hidden" name="js_section[' . $section_count . '][fields][]" value="' . $field . '" />';
-											$added_fields .= '<span class="js-template-field-title"><strong>' . $custom_name . '</strong></span>';
-											$added_fields .= '<span class="js-template-field-delete"><img src="' . plugins_url( '../images/delete.png', __FILE__ ) . '" class="js-template-field-delete-img" /><span>';
-											$added_fields .= '</p>';
+											$added_fields .= '<div class="js-template-field-title"><strong>' . $custom_name . '</strong></div>';
+											$added_fields .= '<div class="js-template-field-delete"><img src="' . plugins_url( '../images/delete.png', __FILE__ ) . '" class="js-template-field-delete-img" /></div></div>';
+											$added_fields .= '<div class="js-template-field-style"><a class="js-templete-edit-style">Edit Style</a>';
+											$added_fields .= '<div class="js-template-style-section">';
+											//$added_fields .= '<div clas="js-template-field-font-size">Font Size(px): <input type="text" size="2" class="" name="js_section[' . $section_count . '][font_size][]" /></div>';
+											//$added_fields .= '<div clas="js-template-field-font-size">Color: <input type="text" size="2" class="js-template-field-color" name="js_section[' . $section_count . '][color][]" /></div>';
+											$added_fields .= '<div class="clear"></div>';
+											$added_fields .= '</div></div></div>';
 										}
 									}
 								}

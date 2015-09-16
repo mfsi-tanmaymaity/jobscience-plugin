@@ -165,8 +165,24 @@
     max-width: 250px;
     padding: 10px 15px;
     cursor: move;
+    margin: 15px 0;
 }
 .js-template-job-field .js-template-field-delete {
-    float: right;
+    cursor: pointer;
+    float: left;
+    text-align: right;
+    width: 13%;
+}
+.js-template-field-title {
+    float: left;
+    padding-right: 4%;
+    width: 83%;
+    word-wrap: break-word;
+}
+.js-template-field-style {
+    clear: both;
+    padding-top: 5px;
+}
+.js-template-field-style > a {
     cursor: pointer;
 }
