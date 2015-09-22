@@ -132,6 +132,10 @@
     width: 100%;
 	max-width: 150px;
 }
+/* Fixed issue on Color Picker */
+.wp-picker-input-wrap {
+    position: relative;
+}
 /* Single Job Template style */
 #jobscience-single-job-template .js-job-formats {
     float: left;
@@ -154,7 +158,7 @@
     margin: 10px;
     padding: 5px;
 }
-.js-section-width.js-number-field, .js-template-add-field {
+.js-section-width.js-number-field, .js-template-add-field, .js-template-text-format {
     max-width: 100%;
 }
 #js-create-template .js-template-row {
@@ -185,4 +189,22 @@
 }
 .js-template-field-style > a {
     cursor: pointer;
+}
+.js-template-style-section {
+    border: 1px dotted;
+    display: none;
+    margin-bottom: 5px;
+    margin-top: 14px;
+    padding: 7px;
+}
+.js-template-style-section div {
+    margin: 5px 0;
+}
+.js-templete-edit-style:after {
+    font: 400 20px/1 dashicons;
+    content: "\f140";
+    vertical-align: middle;
+}
+.js-templete-edit-style.div_show:after {
+    content: "\f142";
 }

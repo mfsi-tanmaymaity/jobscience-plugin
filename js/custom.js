@@ -1,6 +1,6 @@
 /**
  * Name			: custom.js
- * Description	: This file is for all jQuery coding for this plugin.
+ * Description	: This file is for all jQuery coding for this plugin. This file is only for Dashboard, not for front end.
  * Author		: JobScience
  * Date			: 04/29/2015 (MM/DD/YYYY)
  * package		: Job Manager JobScience plugin
@@ -192,10 +192,21 @@ jQuery( document ).ready( function() {
 			new_field += '<input type="hidden" name="js_section[' + index + '][fields][]" value="' + jQuery(this).val() + '" />';
 			new_field += '<div class="js-template-field-title"><strong>' + jQuery("option:selected", jQuery(this)).text() + '</strong></div>';
 			new_field += '<div class="js-template-field-delete"><img src="../wp-content/plugins/job-manager-jobscience/images/delete.png" class="js-template-field-delete-img" /></div></div>';
-			new_field += '<div class="js-template-field-style"><a class="js-templete-edit-style">Edit Style</a></div>'
+			new_field += '<div class="js-template-field-style"><a class="js-templete-edit-style">Edit Style</a>'
+			new_field += '<div class="js-template-style-section">';
+			new_field += '<div clas="js-template-field-font-size">Font Size(px): <input type="text" size="2" class="js-number-field" name="js_section[' + index + '][font_size][]" value="" /></div>';
+			new_field += '<div clas="js-template-field-color-section">Color: <input type="text" size="2" class="js-template-field-color" name="js_section[' + index + '][color][]" /></div>';
+			new_field += '<div clas="js-template-bold">Text Format:';
+			new_field += '<select name="js_section[' + index + '][text_format][]" class="js-template-text-format">';
+			new_field += '<option value="">Default</option>';
+			new_field += '<option value="bold">Bold</option>';
+			new_field += '<option value="italic">Italic</option>';
+			new_field += '</select></div>';
+			new_field += '<div class="clear"></div></div>';
 			new_field += '</div>';
 			jQuery(this).parent('p').prev("div.js-template-added-fields").append(new_field);
 			jQuery(this).val('');
+			jQuery('.js-template-field-color').wpColorPicker();
 		}
 	});
 
@@ -205,11 +216,13 @@ jQuery( document ).ready( function() {
 	});
 
 	// Open/hide/add the "Edit Style" section.
-	jQuery("#js-create-template").on("click", ".js-templete-edit-style", function(e){
+	jQuery("#js-create-template").on('click', ".js-templete-edit-style", function(e){
 		e.preventDefault();
+		jQuery(this).next(".js-template-style-section").toggle();
+		jQuery(this).toggleClass('div_show');
 	});
 
-	//jQuery('.js-template-field-color').wpColorPicker();
+	jQuery('.js-template-field-color').wpColorPicker();
 
 	jQuery(".js-template-added-fields").sortable({
 		item: ".js-template-job-field",

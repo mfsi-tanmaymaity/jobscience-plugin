@@ -19,11 +19,14 @@ require_once( JS_PLUGIN_DIR . '/includes/jobscience-shortcode.php' );
  * Function for Enqueue all js and css file.
  */
 function jobscience_add_js_css_file() {
+	// Include the shortable and color-picker.
 	wp_enqueue_script( 'jquery-ui-sortable' );
 	wp_enqueue_style( 'wp-color-picker' );
 	wp_enqueue_script( 'wp-color-picker');
-	// Include the js file.
-	wp_enqueue_script( 'jobscience-js', plugins_url( '/js/custom.js', __FILE__ ), array( 'jquery' ) );
+	// Include the js file for dashboard.
+	if( is_admin() ) {
+		wp_enqueue_script( 'jobscience-js', plugins_url( '/js/custom.js', __FILE__ ), array( 'jquery' ) );
+	}
 	// Include css file.
 	wp_enqueue_style( 'jobscience-main-css', plugins_url( '/css/jobscience.css', __FILE__ ) );
 	wp_enqueue_style( 'jobscience-custom-css', plugins_url( '/css/jobscience-custom.css', __FILE__ ) );
@@ -329,6 +332,8 @@ function jobscience_pagination_search_callback() {
 
 			// Get job id and siteurl meta value from the postmeta table and create the apply link.
 			$apply_link = get_post_meta( $id, 'js_job_siteURL', true );
+			// Replace the ts2__jobdetails with ts2__Register to link the Apply button with the Application form.
+			$apply_link = str_replace( 'ts2__jobdetails?', 'ts2__Register?', $apply_link );
 
 			$row = $key + 1;
 			$output .= '<div class="js-job-row-' . $row . ' js-job ' . $position . '">';
@@ -455,26 +460,52 @@ function jobscience_get_single_job() {
 				<?php
 					if ( is_array( $value ) ) {
 						foreach ( $value as $key1 => $value1 ) {
+							// Save the current section data in a array.
+							$current_section_data = isset( $current_template['tempalte_data'][$section_count] ) ? $current_template['tempalte_data'][$section_count] : array();
 							// Get the width of current section from current template or from the template format array.
-							$width = isset( $current_template['tempalte_data'][$section_count]['width']) ? $current_template['tempalte_data'][$section_count]['width'] : $value1;
+							$width = isset( $current_section_data['width']) ? $current_section_data['width'] : $value1;
 							// Create Added Fields section for the current template part.
-							$fields = isset( $current_template['tempalte_data'][$section_count]['fields'] ) ? $current_template['tempalte_data'][$section_count]['fields'] : array();
+							$fields = isset( $current_section_data['fields'] ) ? $current_section_data['fields'] : array();
 				?>
 							<div class="js-single-job-col-<?php echo $key1; ?> js-single-job-column" style="width: <?php echo $width; ?>%;" >
 								<div class="js_inside">
 								<?php
 									if ( is_array( $fields ) ) {
 										foreach ( $fields as $key2 => $field ) {
+											$field_class = 'js-single-job-field-' . $section_count . $key2;
+											$font_size = isset( $current_section_data['font_size'][$key2] ) ? $current_section_data['font_size'][$key2] : '';
+											$color = isset( $current_section_data['color'][$key2] ) ? $current_section_data['color'][$key2] : '';
+											// Create the style for current field.
+											$field_style = '';
+											if ( ! empty( $font_size ) ) {
+												$field_style = 'font-size: ' . $font_size . 'px; ';
+											}
+											if ( ! empty( $color ) ) {
+												$field_style .= 'color: ' . $color . '; ';
+											}
+
+											$text_format = isset( $current_section_data['text_format'][$key2] ) ? $current_section_data['text_format'][$key2] : '';
+											$start_text_format = '';
+											$end_text_format = '';
+											if ( 'bold' == $text_format ) {
+												$start_text_format = '<b>';
+												$end_text_format = '</b>';
+											}
+											if ( 'italic' == $text_format ) {
+												$start_text_format = '<i>';
+												$end_text_format = '</i>';
+											}
+
 											if ( 'title' == $field ) {
-												echo '<p class="js-single-job-field' . $key2 . '" >' . get_the_title( $job_post_id ) . '</p>';
+												echo '<p class="' . $field_class . '" style="' . $field_style . '" >' . $start_text_format . get_the_title( $job_post_id ) . $end_text_format . '</p>';
 											} else if ( 'description' == $field ) {
 												$meta_value = get_post_field( 'post_content', $job_post_id );
-												echo '<div class="js-single-job-field' . $key2 . '" >' . $meta_value . '</div>';
+												echo '<div class="' . $field_class . '" style="' . $field_style . '" >' . $start_text_format . $meta_value . $end_text_format . '</div>';
 											} else {
 												// Get the meta key.
 												$job_meta_key = jobscience_create_meta_key( $field );
 												$meta_value = get_post_meta( $job_post_id, $job_meta_key, true );
-												echo '<p class="js-single-job-field' . $key2 . '" >' . $meta_value . '</p>';
+												echo '<p class="' . $field_class . '" style="' . $field_style . '" >' . $start_text_format . $meta_value . $end_text_format . '</p>';
 											}
 										}
 									}
@@ -493,66 +524,21 @@ function jobscience_get_single_job() {
 		?>
 			<div id="js-single-job-footer">
 				<p id="js-back-job-page"><button id="js-back-job-button" value="">Back to Jobs</button></p>
-				<?php $apply_link = get_post_meta( $job_post_id, 'js_job_siteURL', true ); ?>
+				<?php
+					$apply_link = get_post_meta( $job_post_id, 'js_job_siteURL', true );
+					// Replace the ts2__jobdetails with ts2__Register to link the Apply button with the Application form.
+					$apply_link = str_replace( 'ts2__jobdetails?', 'ts2__Register?', $apply_link );
+				?>
 				<p id="js-single-page-apply"><a href="<?php echo $apply_link ?>" target="_blank" ><button>Apply</button></a></p>
 			</div>
 			<div class="js-job-clear-float"></div>
 		</div>
 
 <?php
-		$output1 = ob_get_clean();
+		$output = ob_get_clean();
 	}
 
-	// If the post type is jobscience_job, then create the html.
-	$output .= '<div id="js-single-job"><div class="js-single-job-heading"><div class="js-single-job-title">';
-	$output .= '<p><strong>' . get_the_title( $job_post_id ) . '</strong></p>';
-	$output .= '</div><div class="js-single-job-location">';
-
-	$location_meta = jobscience_create_meta_key( 'ts2__Location__c' );
-	$location = get_post_meta( $job_post_id, $location_meta, true );
-
-	// Check the location is not empty.
-	if ( $location_meta && ! empty( $location ) ) {
-		$output .= '<p>' . $location . '</p>';
-	}
-	$output .= '</div><div class="js-job-clear-float"></div></div>';
-	$output .= '<div class="js-single-job-body"><div class="js-single-job-left">';
-
-	// Get the job function and posted date from meta table.
-	$function_meta = jobscience_create_meta_key( 'ts2__Job_Function__c' );
-	$function = get_post_meta( $job_post_id, $function_meta, true );
-	$posted_meta = jobscience_create_meta_key( 'pubDate' );
-	$posted_on = get_post_meta( $job_post_id, $posted_meta, true );
-
-	// Check the function is not empty.
-	if ( $function_meta && ! empty( $function ) ) {
-		$output .= '<div class="js-single-job-function">';
-			$output .= '<p><strong>Function</strong></p>';
-			$output .= '<p>' . $function . '</p>';
-		$output .= '</div>';
-	}
-
-	// Check the posted_on is not empty.
-	if ( $posted_meta && ! empty( $posted_on ) ) {
-		$output .= '<div class="js-single-job-posted">';
-			$output .= '<p><strong>Posted On</strong></p>';
-			$output .= '<p>' . $posted_on . '</p>';
-		$output .= '</div>';
-	}
-	$output .= '</div><div class="js-single-job-right">';
-	$output .= '<p><strong>Description</strong></p>';
-
-	// Add the job description.
-	$content = get_post_field( 'post_content', $job_post_id );
-	$output .= '<p>' . $content . '</p>';
-	$output .= '</div></div>';
-	$output .= '<div id="js-single-job-footer">';
-		$output .= '<p id="js-back-job-page"><button id="js-back-job-button" value="">Back to Jobs</button></p>';
-		$apply_link = get_post_meta( $job_post_id, 'js_job_siteURL', true );
-		$output .= '<p id="js-single-page-apply"><a href="' . $apply_link . '" target="_blank" ><button>Apply</button></a></p>';
-	$output .= '</div><div class="js-job-clear-float"></div></div>';
-
-	echo $output1;
+	echo $output;
 	wp_die();
 }
 

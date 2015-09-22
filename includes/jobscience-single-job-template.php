@@ -37,7 +37,7 @@
 				'tempalte_data' =>	$template_data,
 			);
 		update_option( 'js-job-template', $js_single_template );
-		//echo '<pre>'; print_r($js_single_template); echo '</pre>';
+		echo '<pre>'; print_r($js_single_template); echo '</pre>';
 	}
 
 	// Get the current template data.
@@ -90,8 +90,8 @@
 
 			// Get the rss tags name from option table.
 			$rss_tag = get_option( 'js-rss-tag' );
-//echo '<pre>'; print_r($current_template); echo '</pre>';
-//echo '<pre>'; print_r($rss_tag); echo '</pre>';
+echo '<pre>'; print_r($current_template); echo '</pre>';
+echo '<pre>'; print_r($rss_tag); echo '</pre>';
 			// Run loop.
 			if ( is_array( $rss_tag ) ) {
 				foreach ( $rss_tag  as $key => $value ) {
@@ -109,38 +109,12 @@
 			<?php
 					if( is_array( $value ) ) {
 						foreach ( $value as $key1 => $value1 ) {
+							// Save the current section data in a array.
+							$current_section_data = isset( $current_template['tempalte_data'][$section_count] ) ? $current_template['tempalte_data'][$section_count] : array();
 							// If the saved format and current format is same then display all value from database, else display default value.
 							if ( $current_template['format'] == $format ) {
 								// Get the width of current section from current template or from the template format array.
-								$width = isset( $current_template['tempalte_data'][$section_count]['width']) ? $current_template['tempalte_data'][$section_count]['width'] : $value1;
-								// Create Added Fields section for the current template part.
-								$fields = isset( $current_template['tempalte_data'][$section_count]['fields'] ) ? $current_template['tempalte_data'][$section_count]['fields'] : array();
-								$added_fields = '';
-								if ( is_array( $fields ) ) {
-									foreach ( $fields as $field ) {
-										if ( 'title' == $field ) {
-											$custom_name = 'Job Title';
-										} else if ( 'description' == $field ) {
-											$custom_name = 'Job Description';
-										} else {
-											// Call the function to get the custom name from the RSS Tag name.
-											$custom_name = jobscience_get_custom_name( $field );
-										}
-
-										if ( false !== $custom_name ) {
-											$added_fields .= '<div class="js-template-job-field"><div>';
-											$added_fields .= '<input type="hidden" name="js_section[' . $section_count . '][fields][]" value="' . $field . '" />';
-											$added_fields .= '<div class="js-template-field-title"><strong>' . $custom_name . '</strong></div>';
-											$added_fields .= '<div class="js-template-field-delete"><img src="' . plugins_url( '../images/delete.png', __FILE__ ) . '" class="js-template-field-delete-img" /></div></div>';
-											$added_fields .= '<div class="js-template-field-style"><a class="js-templete-edit-style">Edit Style</a>';
-											$added_fields .= '<div class="js-template-style-section">';
-											//$added_fields .= '<div clas="js-template-field-font-size">Font Size(px): <input type="text" size="2" class="" name="js_section[' . $section_count . '][font_size][]" /></div>';
-											//$added_fields .= '<div clas="js-template-field-font-size">Color: <input type="text" size="2" class="js-template-field-color" name="js_section[' . $section_count . '][color][]" /></div>';
-											$added_fields .= '<div class="clear"></div>';
-											$added_fields .= '</div></div></div>';
-										}
-									}
-								}
+								$width = isset( $current_section_data['width']) ? $current_section_data['width'] : $value1;
 							} else {
 								$width = $value1;
 							}
@@ -151,8 +125,64 @@
 									<p><strong>Width (%):</strong> <input type="text" size="3" name="js_section[<?php echo $section_count; ?>][width]" class="js-section-width js-number-field" value="<?php echo $width; ?>" /></p>
 									<div class="js-template-added-fields">
 										<?php
-										if ( isset( $added_fields ) ) {
-											echo $added_fields;
+										// If the saved format and current format is same then display all value from database, else display default value.
+										if ( $current_template['format'] == $format ) {
+											// Create Added Fields section for the current template part.
+											$fields = isset( $current_section_data['fields'] ) ? $current_section_data['fields'] : array();
+
+											if ( is_array( $fields ) ) {
+												foreach ( $fields as $field_key => $field ) {
+													if ( 'title' == $field ) {
+														$custom_name = 'Job Title';
+													} else if ( 'description' == $field ) {
+														$custom_name = 'Job Description';
+													} else {
+														// Call the function to get the custom name from the RSS Tag name.
+														$custom_name = jobscience_get_custom_name( $field );
+													}
+
+													if ( false !== $custom_name ) {
+														// Get the font size for the current field.
+														$font_size = isset( $current_section_data['font_size'][$field_key] ) ? $current_section_data['font_size'][$field_key] : '';
+														$color = isset( $current_section_data['color'][$field_key] ) ? $current_section_data['color'][$field_key] : '';
+														$text_format = isset( $current_section_data['text_format'][$field_key] ) ? $current_section_data['text_format'][$field_key] : '';
+														// Create the HTML for each added field in the templete preview section.
+													?>
+														<div class="js-template-job-field">
+															<div>
+																<input type="hidden" name="js_section[<?php echo $section_count; ?>][fields][]" value="<?php echo $field; ?>" />
+																<div class="js-template-field-title">
+																	<strong><?php echo $custom_name; ?></strong>
+																</div>
+																<div class="js-template-field-delete">
+																	<img src="<?php echo plugins_url( '../images/delete.png', __FILE__ ); ?>" class="js-template-field-delete-img" />
+																</div>
+															</div>
+															<div class="js-template-field-style">
+																<a class="js-templete-edit-style">Edit Style</a>
+																<div class="js-template-style-section">
+																	<div clas="js-template-field-font-size">
+																		Font Size(px): <input type="text" size="2" class="js-number-field" name="js_section[<?php echo $section_count;?>][font_size][]" value="<?php echo $font_size; ?>" />
+																	</div>
+																	<div clas="js-template-field-color-section">
+																		Color: <input type="text" size="2" class="js-template-field-color" name="js_section[<?php echo $section_count; ?>][color][]" value="<?php echo $color; ?>" />
+																	</div>
+																	<div clas="js-template-bold">
+																		Text Format:
+																		<select name="js_section[<?php echo $section_count; ?>][text_format][]" class="js-template-text-format">
+																			<option value="" <?php echo '' == $text_format ? 'selected="selected"' : ''; ?> >Default</option>
+																			<option value="bold" <?php echo 'bold' == $text_format ? 'selected="selected"' : ''; ?>>Bold</option>
+																			<option value="italic" <?php echo 'italic' == $text_format ? 'selected="selected"' : ''; ?>>Italic</option>
+																		</select>
+																	</div>
+																	<div class="clear"></div>
+																</div>
+															</div>
+														</div>
+													<?php
+													}
+												}
+											}
 										}
 										?>
 									</div>

@@ -180,6 +180,8 @@ function jobscience_jobscience_shortcode( $atts ) {
 
 					// Get job id and siteurl meta value from the postmeta table and create the apply link.
 					$apply_link = get_post_meta( $id, 'js_job_siteURL', true );
+					// Replace the ts2__jobdetails with ts2__Register to link the Apply button with the Application form.
+					$apply_link = str_replace( 'ts2__jobdetails?', 'ts2__Register?', $apply_link );
 			?>
 					<div class="js-job-row-<?php echo esc_attr( $key + 1 ); ?> js-job <?php echo esc_attr( $position ); ?>">
 						<div id="js-job-col-1" class="js-job-detail <?php echo esc_attr( $position ); ?>">
