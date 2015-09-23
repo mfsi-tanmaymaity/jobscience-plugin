@@ -158,7 +158,7 @@ if ( ! is_writable( $custom_css_path ) ) {
 				?>
 				</tr>
 	<?php
-	// For all meta filed.
+	// For all meta field.
 	if ( is_array( $meta_keys ) ) {
 		foreach ( $meta_keys as $key => $meta_key ) {
 			// Skip the job id and siteURL.
