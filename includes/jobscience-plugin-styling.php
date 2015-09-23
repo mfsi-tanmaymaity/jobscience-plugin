@@ -76,7 +76,7 @@ if ( isset( $_POST['jobscience_styling_nonce_name'] ) ) {
 // Check the custom css file permission.
 if ( ! is_writable( $custom_css_path ) ) {
 ?>
-	<div class="error"><p>The <strong>jobscience-option.css</strong> file is not writable, please change the file permission.</p></div>
+	<div class="error"><p>The <strong>jobscience-custom.css</strong> file is not writable, please change the file permission.</p></div>
 <?php
 }
 ?>

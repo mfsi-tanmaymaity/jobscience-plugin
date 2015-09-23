@@ -145,6 +145,7 @@ if ( isset( $_POST['jobscience_configure_nonce_name'] ) && wp_verify_nonce( wp_u
 			<p>After add/delete/modify any field in the RSS Feed Form, you need to do the below tasks.</p>
 			<p>Please insert the RSS Feed URL and "Copy all jobs from Salesforce" Form Plugin Configure Page.</p>
 			<p>Please go to the Plugin Styling Page and set the Field order.</p>
+			<p>Please go to the Job Template Page and save the template once.</p>
 		</div>
 	<?php
 	}
@@ -219,6 +220,7 @@ if ( ! $plugin_configure ) {
 		<p><strong>After add/delete/modify any field in the RSS Feed Form, you need to do the below tasks.</strong></p>
 		<p><strong>Please insert the RSS Feed URL and "Copy all jobs from Salesforce" Form Plugin Configure Page.</strong></p>
 		<p><strong>Please go to the Plugin Styling Page and set the Field order.</strong></p>
+		<p><strong>Please go to the Job Template Page and save the template once.</strong></p>
 		<!-- HTML for the RSS Feed tags table  -->
 		<table class="wp-list-table widefat fixed striped" id="js-rss-feed-tag">
 			<tbody>

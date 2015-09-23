@@ -504,8 +504,11 @@ function jobscience_get_single_job() {
 											} else {
 												// Get the meta key.
 												$job_meta_key = jobscience_create_meta_key( $field );
-												$meta_value = get_post_meta( $job_post_id, $job_meta_key, true );
-												echo '<p class="' . $field_class . '" style="' . $field_style . '" >' . $start_text_format . $meta_value . $end_text_format . '</p>';
+												// The the meta key is not empty.
+												if ( $job_meta_key ) {
+													$meta_value = get_post_meta( $job_post_id, $job_meta_key, true );
+													echo '<p class="' . $field_class . '" style="' . $field_style . '" >' . $start_text_format . $meta_value . $end_text_format . '</p>';
+												}
 											}
 										}
 									}

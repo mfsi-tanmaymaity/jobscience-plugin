@@ -37,7 +37,6 @@
 				'tempalte_data' =>	$template_data,
 			);
 		update_option( 'js-job-template', $js_single_template );
-		echo '<pre>'; print_r($js_single_template); echo '</pre>';
 	}
 
 	// Get the current template data.
@@ -76,6 +75,7 @@
 		</form>
 	</div>
 	<div id="js-create-template">
+		<h3>Template Preview</h3>
 		<form action='' method="POST" name="js_template_data">
 			<input type="hidden" name="js_job_template_format" value="<?php echo $format; ?>" />
 			<?php
@@ -90,8 +90,7 @@
 
 			// Get the rss tags name from option table.
 			$rss_tag = get_option( 'js-rss-tag' );
-echo '<pre>'; print_r($current_template); echo '</pre>';
-echo '<pre>'; print_r($rss_tag); echo '</pre>';
+
 			// Run loop.
 			if ( is_array( $rss_tag ) ) {
 				foreach ( $rss_tag  as $key => $value ) {
