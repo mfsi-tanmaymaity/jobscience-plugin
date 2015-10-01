@@ -47,7 +47,7 @@ ob_start();
 
 $capturedData = file_get_contents( 'php://input' );
 //$content = fread( $capturedData, 5000 );
-//$outputFile = fopen( 'capturedData.txt', 'a' );
+	//$outputFile = fopen( 'capturedData.txt', 'a' );
 	//fwrite( $outputFile, $capturedData );
 	//fclose( $outputFile );
 // Enable the XML error handling.
@@ -67,6 +67,17 @@ if ( false !== $xml ) {
 	$job_open = $job_tag->ts2__Post_Job__c;
 	// Get the job description.
 	$job_description = $job_tag->ts2__Job_Description__c;
+	// Create the patterns and replacement array.
+	$patterns = array();
+	$patterns[0] = '/style="(.*?)"/';
+	$patterns[1] = '/class="(.*?)"/';
+	$patterns[2] = '/id="(.*?)"/';
+	$replacements = array();
+	$replacements[0] = '';
+	$replacements[1] = '';
+	$replacements[2] = '';
+	// Remove the inline css and the class from the description.
+	$job_description = preg_replace( $patterns, $replacements, $job_description );
 
 	// Get the rss tags name from option table.
 	$rss_tag = get_option( 'js-rss-tag' );
@@ -76,6 +87,10 @@ if ( false !== $xml ) {
 		foreach ( $rss_tag as $tag ) {
 			$custom_name = 'js_job_' . strtolower( str_replace( ' ', '_', $tag['custom_name'] ) );
 			$tag_data = $job_tag->$tag['tag'];
+			// Convert float to integer for job Opening.
+			if ( 'ts2__Openings__c' == $tag['tag']) {
+				$tag_data = intval( $tag_data );
+			}
 			$temp[ $custom_name ] = $tag_data;
 		}
 	}
@@ -141,10 +156,10 @@ if ( $organization == $org_id ) {
 			update_post_meta( $jod_post_id, $key, (string)$value );
 		}
 	}
-	$outputFile = fopen( 'outbound_result.txt', 'a' );
-	fwrite( $outputFile, PHP_EOL . date( 'Y-m-d H:i:s' ) . ' Org ID= ' . $org_id . ' job id= ' . $id . ' Status= ' . $job_open );
-	fwrite( $outputFile, ' Post ID= ' . $jod_post_id . ' Status= ' . $status );
-	fclose( $outputFile );
+	//$outputFile = fopen( 'outbound_result.txt', 'a' );
+	//fwrite( $outputFile, PHP_EOL . date( 'Y-m-d H:i:s' ) . ' Org ID= ' . $org_id . ' job id= ' . $id . ' Status= ' . $job_open );
+	//fwrite( $outputFile, ' Post ID= ' . $jod_post_id . ' Status= ' . $status );
+	//fclose( $outputFile );
 }
 
 fclose( $capturedData );

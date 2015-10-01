@@ -63,8 +63,8 @@ if ( isset( $_POST['jobscience_styling_nonce_name'] ) ) {
 		}
 	}
 } else if ( isset( $_POST['jobscience_custom_css_nonce_name'] ) ) {
-	// Verify he nonce field.
-	if ( wp_verify_nonce( sanitize_text_field( $_POST['jobscience_custom_css_nonce_name'] ), 'jobscience_custom_css_nonce' ) ) {
+	// Check the custom css file permission. and Verify he nonce field.
+	if ( is_writable( $custom_css_path ) && wp_verify_nonce( sanitize_text_field( $_POST['jobscience_custom_css_nonce_name'] ), 'jobscience_custom_css_nonce' ) ) {
 		// Write the custom css on jobscience-custom.css file.
 		file_put_contents( $custom_css_path, $_POST['js_custom_css_field'], LOCK_EX );
 	}
@@ -76,7 +76,7 @@ if ( isset( $_POST['jobscience_styling_nonce_name'] ) ) {
 // Check the custom css file permission.
 if ( ! is_writable( $custom_css_path ) ) {
 ?>
-	<div class="error"><p>The <strong>jobscience-custom.css</strong> file is not writable, please change the file permission.</p></div>
+	<div class="update-nag">The <strong>jobscience-custom.css</strong> file is not writable, please change the file permission.</div>
 <?php
 }
 ?>
