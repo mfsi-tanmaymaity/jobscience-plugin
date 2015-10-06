@@ -77,22 +77,25 @@ if ( isset( $_POST['jobscience_configure_nonce_name'] ) && wp_verify_nonce( wp_u
 	// Declare variable.
 	$tag_name = isset( $_POST['js_rss_tag_name'] ) ? $_POST['js_rss_tag_name'] : '';
 	$custom_name = isset( $_POST['js_custom_name'] ) ? $_POST['js_custom_name'] : '';
+	$rss_field_type = isset( $_POST['js_rss_field_type'] ) ? $_POST['js_rss_field_type'] : '';
 	$tag_array = array();
 
-	// Proceed if both are array.
-	if ( is_array( $tag_name ) && is_array( $custom_name ) ) {
+	// Proceed if all are array.
+	if ( is_array( $tag_name ) && is_array( $custom_name ) && is_array( $rss_field_type ) ) {
 		// Run a loop on $tag_name.
 		foreach ( $tag_name as $key => $tag ) {
 			// Remove white space.
 			$tag = trim( $tag );
 			$custom = trim( $custom_name[ $key ] );
+			$field_type = trim( $rss_field_type[ $key ] );
 
 			// Check for not empty value.
-			if ( ! empty( $tag ) && ! empty( $custom ) ) {
+			if ( ! empty( $tag ) && ! empty( $custom ) && ! empty( $field_type ) ) {
 				// Make a associative array.
 				$temp_array = array(
 					'tag'			=> $tag,
 					'custom_name'	=> $custom,
+					'rss_field_type'	=> $field_type,
 				);
 				array_push( $tag_array, $temp_array );
 			}
@@ -227,6 +230,7 @@ if ( ! $plugin_configure ) {
 				<tr>
 					<th scope="col">Field Name in RSS Feed(Tag)</th>
 					<th scope="col">Custom name( For WordPress)</th>
+					<th scope="col">Field Type</th>
 				</tr>
 	<?php
 	// Check the variable is array and not empty.
@@ -237,6 +241,15 @@ if ( ! $plugin_configure ) {
 				<tr>
 					<td><input type="text" name="js_rss_tag_name[]" class="js-rss-tag" value="<?php echo $tag_value['tag']; ?>" /></td>
 					<td><input type="text" name="js_custom_name[]" class="js-custom-name" value="<?php echo $tag_value['custom_name']; ?>" /></td>
+					<td>
+						<select name="js_rss_field_type[]" class="js-rss-field-type">
+							<option value="text" <?php echo 'text' == $tag_value['rss_field_type'] ? 'selected' : ''; ?>>Text</option>
+							<option value="int" <?php echo 'int' == $tag_value['rss_field_type'] ? 'selected' : ''; ?>>Int</option>
+							<option value="float" <?php echo 'float' == $tag_value['rss_field_type'] ? 'selected' : ''; ?>>Float</option>
+							<option value="date" <?php echo 'date' == $tag_value['rss_field_type'] ? 'selected' : ''; ?>>Date</option>
+							<option value="salary" <?php echo 'salary' == $tag_value['rss_field_type'] ? 'selected' : ''; ?>>Salary</option>
+						</select>
+					</td>
 				</tr>
 	<?php
 		}
@@ -246,6 +259,15 @@ if ( ! $plugin_configure ) {
 				<tr>
 					<td><input type="text" name="js_rss_tag_name[]" class="js-rss-tag" /></td>
 					<td><input type="text" name="js_custom_name[]" class="js-custom-name" /></td>
+					<td>
+						<select name="js_rss_field_type[]" class="js-rss-field-type">
+							<option value="text">Text</option>
+							<option value="int">Int</option>
+							<option value="float">Float</option>
+							<option value="date">Date</option>
+							<option value="salary">Salary</option>
+						</select>
+					</td>
 				</tr>
 	<?php } ?>
 			</tbody>
@@ -339,5 +361,6 @@ if ( $plugin_configure && is_array( $rss_tag ) && ! empty( $rss_tag )  ) {
 	</ul>
 <?php
 }
+//echo 'hi' . get_option( 'date_format' );
 ?>
 </div>

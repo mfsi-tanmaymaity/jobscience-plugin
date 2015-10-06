@@ -47,9 +47,9 @@ ob_start();
 
 $capturedData = file_get_contents( 'php://input' );
 //$content = fread( $capturedData, 5000 );
-	//$outputFile = fopen( 'capturedData.txt', 'a' );
-	//fwrite( $outputFile, $capturedData );
-	//fclose( $outputFile );
+	$outputFile = fopen( 'capturedData.txt', 'a' );
+	fwrite( $outputFile, PHP_EOL . $capturedData );
+	fclose( $outputFile );
 // Enable the XML error handling.
 libxml_use_internal_errors( true );
 $xml = simplexml_load_string( (string) $capturedData );
@@ -69,13 +69,11 @@ if ( false !== $xml ) {
 	$job_description = $job_tag->ts2__Job_Description__c;
 	// Create the patterns and replacement array.
 	$patterns = array();
-	$patterns[0] = '/style="(.*?)"/';
-	$patterns[1] = '/class="(.*?)"/';
-	$patterns[2] = '/id="(.*?)"/';
+	$patterns[0] = '/class="(.*?)"/';
+	$patterns[1] = '/id="(.*?)"/';
 	$replacements = array();
 	$replacements[0] = '';
 	$replacements[1] = '';
-	$replacements[2] = '';
 	// Remove the inline css and the class from the description.
 	$job_description = preg_replace( $patterns, $replacements, $job_description );
 
@@ -156,10 +154,10 @@ if ( $organization == $org_id ) {
 			update_post_meta( $jod_post_id, $key, (string)$value );
 		}
 	}
-	//$outputFile = fopen( 'outbound_result.txt', 'a' );
-	//fwrite( $outputFile, PHP_EOL . date( 'Y-m-d H:i:s' ) . ' Org ID= ' . $org_id . ' job id= ' . $id . ' Status= ' . $job_open );
-	//fwrite( $outputFile, ' Post ID= ' . $jod_post_id . ' Status= ' . $status );
-	//fclose( $outputFile );
+	$outputFile = fopen( 'outbound_result.txt', 'a' );
+	fwrite( $outputFile, PHP_EOL . date( 'Y-m-d H:i:s' ) . ' job id= ' . $id . ' Status= ' . $job_open );
+	fwrite( $outputFile, ' Post ID= ' . $jod_post_id . ' Name= ' . $job_name );
+	fclose( $outputFile );
 }
 
 fclose( $capturedData );

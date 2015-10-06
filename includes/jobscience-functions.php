@@ -115,13 +115,11 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = NULL ) {
 						$content = $tag_description[0]['data'];
 						// Create the patterns and replacement array.
 						$patterns = array();
-						$patterns[0] = '/style="(.*?)"/';
-						$patterns[1] = '/class="(.*?)"/';
-						$patterns[2] = '/id="(.*?)"/';
+						$patterns[0] = '/class="(.*?)"/';
+						$patterns[1] = '/id="(.*?)"/';
 						$replacements = array();
 						$replacements[0] = '';
 						$replacements[1] = '';
-						$replacements[2] = '';
 						// Remove the inline css and the class from the description.
 						$content = preg_replace( $patterns, $replacements, $content );
 						$temp['description'] = $content;

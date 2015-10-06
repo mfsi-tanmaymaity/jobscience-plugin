@@ -126,6 +126,8 @@ function jobscience_pagination_callback( page_no, obj, call_type ) {
 		obj.find( ".js-pagination" ).html( response.pagination );
 		if ( 1 === call_type ) {
 			jQuery( ".js-matching-job-count" ).text( ' | ' + response.match + '  Matches' );
+			// Show the pagination and Heading section.
+			jQuery( ".jobscience-pagination-section, .jobscience-result-heading" ).show();
 		}
 		// Remove the ajax loader.
 		jQuery( '.js-page-loader' ).hide();
