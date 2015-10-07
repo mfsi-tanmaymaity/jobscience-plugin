@@ -77,11 +77,39 @@ function register_jobscience_job() {
 		'rewrite'			=> array(
 								'slug' => 'job',
 								),
+		'capability_type'    => 'post',
+        'capabilities'       => array( 'create_posts' => false ),
+        'map_meta_cap'       => true,
 	);
 
 	// Register the custom post type.
 	register_post_type( 'jobscience_job', $args );
 }
+
+/**
+ * Remove quick edit for custom post type.
+ */
+add_filter( 'post_row_actions', 'function_remove_row_actions', 10, 2 );
+function function_remove_row_actions( $actions, $post )
+{
+	global $current_screen;
+	if( $current_screen->post_type != 'jobscience_job' )
+		return $actions;
+	unset( $actions['edit'] );
+	unset( $actions['view'] );
+	unset( $actions['trash'] );
+	unset( $actions['inline hide-if-no-js'] );
+
+	return $actions;
+}
+
+/**
+ * Remove Publish meta box for custom post type.
+ */
+function function_remove_publish_box() {
+    remove_meta_box( 'submitdiv', 'jobscience_job', 'side' );
+}
+add_action( 'admin_menu', 'function_remove_publish_box' );
 
 /**
  * Add meta box.

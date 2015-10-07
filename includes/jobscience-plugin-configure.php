@@ -359,15 +359,5 @@ if ( $plugin_configure && is_array( $rss_tag ) && ! empty( $rss_tag )  ) {
 	</ul>
 <?php
 }
-//echo 'hi' . get_option( 'date_format' );
-$datetime = DateTime::createFromFormat('c', '2013-02-13T08:35:34.195Z');
-echo 'hi' . $datetime;
-echo '<br>' . date( get_option( 'date_format' ), strtotime('10') );
-echo '<br>' . date( get_option( 'date_format' ), strtotime('3') );
-echo '<br>' . strtotime('3');
-echo '<br>' . strtotime('2013-02-13T08:35:34.195Z');
-echo '<br>' . $nombre_format_francais = number_format('100000.12', 2, '.', ',');
-echo '<br>' . $nombre_format_francais = number_format('100008760.00', 2, '.', ',');
-
 ?>
 </div>

@@ -85,9 +85,21 @@ if ( false !== $xml ) {
 		foreach ( $rss_tag as $tag ) {
 			$custom_name = 'js_job_' . strtolower( str_replace( ' ', '_', $tag['custom_name'] ) );
 			$tag_data = $job_tag->$tag['tag'];
-			// Convert float to integer for job Opening.
-			if ( 'ts2__Openings__c' == $tag['tag']) {
-				$tag_data = intval( $tag_data );
+			$tag_data = (string)$tag_data;
+
+			// Run a switch case.
+			switch ( $tag['rss_field_type'] ) {
+				case 'int':
+					$tag_data = ! empty( $tag_data) ? intval( $tag_data ) : '';
+					break;
+
+				case 'salary':
+					$tag_data = is_numeric( $tag_data ) && ! empty( $tag_data) ? number_format( $tag_data, 2, '.', ',' ) : '';
+					break;
+
+				case 'date':
+					$tag_data = ! empty( $tag_data) && strtotime( $tag_data ) ? date( get_option( 'date_format' ), strtotime( $tag_data ) ) : '';
+					break;
 			}
 			$temp[ $custom_name ] = $tag_data;
 		}
