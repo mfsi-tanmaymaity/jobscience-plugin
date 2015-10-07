@@ -108,7 +108,23 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = NULL ) {
 						foreach ( $rss_tag as $tag ) {
 							$custom_name = 'js_job_' . strtolower( str_replace( ' ', '_', $tag['custom_name'] ) );
 							$tag_data = $item->get_item_tags( '', $tag['tag'] );
-							$temp[ $custom_name ] = $tag_data[0]['data'];
+							$field_value = $tag_data[0]['data'];
+							// Run a switch case.
+							switch ( $tag['rss_field_type'] ) {
+								case 'int':
+									$field_value = ! empty( $field_value) ? intval( $field_value ) : '';
+									break;
+
+								case 'salary':
+									$field_value = is_numeric( $field_value ) && ! empty( $field_value) ? number_format( $field_value, 2, '.', ',' ) : '';
+									break;
+
+								case 'date':
+									$field_value = ! empty( $field_value) && strtotime( $field_value ) ? date( get_option( 'date_format' ), strtotime( $field_value ) ) : '';
+									break;
+							}
+
+							$temp[ $custom_name ] = $field_value;
 						}
 
 						$tag_description = $item->get_item_tags( '', 'description' );

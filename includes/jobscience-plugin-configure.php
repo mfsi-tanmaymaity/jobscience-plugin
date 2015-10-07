@@ -245,9 +245,8 @@ if ( ! $plugin_configure ) {
 						<select name="js_rss_field_type[]" class="js-rss-field-type">
 							<option value="text" <?php echo 'text' == $tag_value['rss_field_type'] ? 'selected' : ''; ?>>Text</option>
 							<option value="int" <?php echo 'int' == $tag_value['rss_field_type'] ? 'selected' : ''; ?>>Int</option>
-							<option value="float" <?php echo 'float' == $tag_value['rss_field_type'] ? 'selected' : ''; ?>>Float</option>
-							<option value="date" <?php echo 'date' == $tag_value['rss_field_type'] ? 'selected' : ''; ?>>Date</option>
 							<option value="salary" <?php echo 'salary' == $tag_value['rss_field_type'] ? 'selected' : ''; ?>>Salary</option>
+							<option value="date" <?php echo 'date' == $tag_value['rss_field_type'] ? 'selected' : ''; ?>>Date</option>
 						</select>
 					</td>
 				</tr>
@@ -263,9 +262,8 @@ if ( ! $plugin_configure ) {
 						<select name="js_rss_field_type[]" class="js-rss-field-type">
 							<option value="text">Text</option>
 							<option value="int">Int</option>
-							<option value="float">Float</option>
-							<option value="date">Date</option>
 							<option value="salary">Salary</option>
+							<option value="date">Date</option>
 						</select>
 					</td>
 				</tr>
@@ -362,5 +360,14 @@ if ( $plugin_configure && is_array( $rss_tag ) && ! empty( $rss_tag )  ) {
 <?php
 }
 //echo 'hi' . get_option( 'date_format' );
+$datetime = DateTime::createFromFormat('c', '2013-02-13T08:35:34.195Z');
+echo 'hi' . $datetime;
+echo '<br>' . date( get_option( 'date_format' ), strtotime('10') );
+echo '<br>' . date( get_option( 'date_format' ), strtotime('3') );
+echo '<br>' . strtotime('3');
+echo '<br>' . strtotime('2013-02-13T08:35:34.195Z');
+echo '<br>' . $nombre_format_francais = number_format('100000.12', 2, '.', ',');
+echo '<br>' . $nombre_format_francais = number_format('100008760.00', 2, '.', ',');
+
 ?>
 </div>
