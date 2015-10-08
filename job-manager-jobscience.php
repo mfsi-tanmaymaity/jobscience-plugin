@@ -351,7 +351,7 @@ function jobscience_pagination_search_callback() {
 	$display_fields = get_option( 'js_display_fields' );
 
 	// Run loop on the $results array to get all job ID and Title.
-	if ( is_array( $results ) ) {
+	if ( is_array( $results ) && ! empty( $results ) ) {
 		// Run loop.
 		foreach ( $results as $key => $job ) {
 			// Save ID and title in variable.
@@ -402,6 +402,8 @@ function jobscience_pagination_search_callback() {
 			$output .= '<div class="js-job-clear-float"></div>';
 			$output .= '</div>';
 		}
+	} else {
+		$output = '<p>No Job Found</p>';
 	}
 
 	$return = array();
@@ -528,7 +530,7 @@ function jobscience_get_single_job() {
 												echo '<p class="' . $field_class . '" style="' . $field_style . '" >' . $start_text_format . get_the_title( $job_post_id ) . $end_text_format . '</p>';
 											} else if ( 'description' == $field ) {
 												$meta_value = get_post_field( 'post_content', $job_post_id );
-												echo '<div class="' . $field_class . '" style="' . $field_style . '" >' . $start_text_format . $meta_value . $end_text_format . '</div>';
+												echo '<div class="job-single-description ' . $field_class . '" style="' . $field_style . '" >' . $start_text_format . $meta_value . $end_text_format . '</div>';
 											} else {
 												// Get the meta key.
 												$job_meta_key = jobscience_create_meta_key( $field );

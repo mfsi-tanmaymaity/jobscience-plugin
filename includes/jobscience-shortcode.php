@@ -120,10 +120,10 @@ function jobscience_jobscience_shortcode( $atts ) {
 					}
 				}
 				?>
+				<div class="js-search-submit">
+					<button class="js-search-submit-button" value="submit">Search</button>
+				</div>
 			</form>
-			<div class="js-search-submit">
-				<button class="js-search-submit-button" value="submit">Search</button>
-			</div>
 		</div>
 		<!-- Pagination block -->
 		<div class="jobscience-pagination-section">

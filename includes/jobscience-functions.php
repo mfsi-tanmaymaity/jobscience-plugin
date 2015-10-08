@@ -96,7 +96,7 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = NULL ) {
 					parse_str( $link_parts, $link_arg );
 					$job_id = $link_arg['jobId'];
 
-					// If the $new_job_idisnull then copy all job else copy the job which job id is $new_job_id.
+					// If the $new_job_id is null then copy all job else copy the job which job id is $new_job_id.
 					if (  is_null( $new_job_id ) || $new_job_id == $job_id ) {
 						// Create a temporary array with all data of any job.
 						$temp = array();
@@ -107,7 +107,13 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = NULL ) {
 						// Run a loop for the rss tag.
 						foreach ( $rss_tag as $tag ) {
 							$custom_name = 'js_job_' . strtolower( str_replace( ' ', '_', $tag['custom_name'] ) );
-							$tag_data = $item->get_item_tags( '', $tag['tag'] );
+							//
+							if ( 'ts2__Date_Posted__c' == $tag['tag']) {
+								$tag_data = $item->get_item_tags( '', 'pubDate' );
+							} else {
+								$tag_data = $item->get_item_tags( '', $tag['tag'] );
+							}
+
 							$field_value = $tag_data[0]['data'];
 							// Run a switch case.
 							switch ( $tag['rss_field_type'] ) {
@@ -136,6 +142,14 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = NULL ) {
 						$replacements = array();
 						$replacements[0] = '';
 						$replacements[1] = '';
+
+						// If anyone use the upload image functionality to add any images with any job desccription on Salesforce, then the images will not display from WordPress.
+						// To solve the problem we need to replace the domain from the /servlet/rtaImage image link with the domain of the job apply link.
+						$remove_part = '/ts2__jobdetails\?' . $link_parts . '/';
+						$rta_img_link = preg_replace( $remove_part, '', $link );
+						$patterns[2] = '/src="(.*?)\/servlet\/rtaImage/';
+						$replacements[2] = 'src="' . $rta_img_link . 'servlet/rtaImage';
+
 						// Remove the inline css and the class from the description.
 						$content = preg_replace( $patterns, $replacements, $content );
 						$temp['description'] = $content;
@@ -376,15 +390,13 @@ function jobscience_get_matching_job( $department, $location, $function, $search
 		$search = '%' . $search . '%';
 		$search_array = array( $search );
 
-		$join .= ' INNER JOIN
-					wp_postmeta meta4
-					ON post.ID = meta4.post_id ';
+		//$join .= ' INNER JOIN
+					//wp_postmeta meta4
+					//ON post.ID = meta4.post_id ';
 		$where .= ' AND
-					( meta4.meta_value LIKE %s
+					( post.post_title LIKE %s
 					OR
-					post.post_title LIKE %s
-					OR
-					post.post_content LIKE %s)';
+					post.post_content LIKE %s )';
 	}
 
 	$merge_array = array_merge( $department_array, $location_array, $function_array, $search_array, $search_array, $search_array );

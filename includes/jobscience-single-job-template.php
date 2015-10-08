@@ -5,7 +5,7 @@
  * Author		: JobScience
  * Date			: 09/08/2015 (MM/DD/YYYY)
  * @package		: Job Manager JobScience plugin
- **/
+ */
 ?>
 
 <div id="jobscience-single-job-template" class="wrap">

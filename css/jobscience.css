@@ -5,6 +5,12 @@
  * Date			: 04/29/2015 (MM/DD/YYYY)
  **/
 
+/* Remove the border from the publish meta box on the custom post type edit field. */
+.post-type-jobscience_job  #poststuff #side-sortables.empty-container {
+    border: none;
+}
+/* End. */
+
 /* Generate Shortcode page style  */
 #js-shortcode-generator .js-shortcode-select {
 	float: left;

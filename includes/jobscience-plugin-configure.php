@@ -361,3 +361,7 @@ if ( $plugin_configure && is_array( $rss_tag ) && ! empty( $rss_tag )  ) {
 }
 ?>
 </div>
+<?php
+$a = 'test1<br><br>123<br><br>3321<br><br>555<br><br>endtext<img alt="User-added image" src="https://c.na12.content.force.com/servlet/rtaImage?eid=a0KU000000IUILn&amp;feoid=00NU0000004RrZu&amp;refid=0EMU0000000MMMM" style="height: 335px; width: 500px;"></img><br><img alt="" src="data:image/png;base64,R0lGODlhEAAQAOZcAHF6hf///664w5KeqfHz9JqksMTL1Nbc4rjE0eTr8bnEzyw3QvD1/Ovx+O/0+2BqdFlha/X4+e71+rG7xig0P1xlbys2QeDo8Sk0QNXd5pGdqsHN2bjEz7/K1Fhha56lrLjE0LrF0JGdp5qiqXF7hoeRm6Krtio1QH+Klaayvtrb3VZfabLAzvDz9JymsnF8h15mb3J+ioyZpcfR2cHM14GMl9zk62pzfGlyfmx2gmVueCYyPrC7x1xkbXuGkejv9cfP146Xn5iirpSgq5uotPj9/6OnrbnF0MLK011lbm53grnE0EZOWOPq8GFqc0FLVc/U2rjDztDa5M/X4JWcpbC9ynaBi7vH1NXb4tnf5i04Q2RueP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAFwALAAAAAAQABAAAAeggFyCgwCFAIOIiAAMDQ0Mh4lchpOUhAGXmJkBUJAADjYZUzMdCjwpRBoynTEqRh8jVEElNSgmPpBcLwFAET8uWVdDEwpWiDkBBgQJBQcIAwJRJIg4yMrMzgIcSohb1cvNzwo3iA/e1+E6iBXm4AJLToge7NhHMIgrAUgtTUJYICICQvRABOFSEQkXpGxgUYVGkkRPdlDAcMLCAi0LmAwKBAA7"></img>';
+$b = preg_replace( '/src="(.*?)\/servlet\/rtaImage/', 'src="https://executivesearch-141613f90ad-148ec0a2f11.secure.force.com/servlet/rtaImage', $a );
+echo '<pre>' . $b;
