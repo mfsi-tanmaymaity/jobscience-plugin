@@ -9,6 +9,8 @@
 jQuery( document ).ready( function() {
 	// On page load call the function to calculate the number of column and set the width of the columns.
 	jobscience_set_width();
+	// Call the function to replace the image links from Job Description.
+	jobscience_image_link_replace();
 
 	// Pagination Ajax call.
 	jQuery( ".js-pagination" ).on( 'click', "button.js-pagination-item", function(e){
@@ -57,6 +59,8 @@ jQuery( document ).ready( function() {
 			// Hide the pagination section.
 			jQuery( ".jobscience-pagination-section, .jobscience-result-heading" ).hide();
 
+			// Call the function to replace the image links from Job Description.
+			jobscience_image_link_replace();
 			// Remove the ajax loader.
 			jQuery( '.js-page-loader' ).hide();
 		} );
@@ -91,6 +95,26 @@ function jobscience_set_width(){
 	jQuery( ".horizontally.js-job-detail", ".js-job" ).css( "width", width + '%' );
 }
 
+// If anyone use the upload image functionality to add any images with any job desccription on Salesforce, then the images will not display from WordPress.
+// To solve the problem we need to replace the domain from the /servlet/rtaImage image link with the domain of the job apply link.
+function jobscience_image_link_replace() {
+	if( jQuery(".job-single-description").find('img').length > 0 ) {
+		jQuery(".job-single-description").find('img').each(function(){
+			var src = jQuery(this).attr('src');
+			var index = src.indexOf('/servlet/rtaImage');
+			if(index > 0) {
+				src = src.substr(index);
+				var href = jQuery('#js-single-page-apply a').attr('href');
+				href = href.substr(0, href.indexOf('ts2__Register?jobId') - 1);
+				jQuery(this).attr('src',(href + src))
+			} else if ( 0 == src.indexOf('image/') && src.indexOf( 'base64') > 0 ) {
+				src = 'data:' + src;
+				jQuery(this).attr('src', src);
+			};
+    	});
+	}
+}
+
 // Pagination Ajax call function.
 function jobscience_pagination_callback( page_no, obj, call_type ) {
 	// Collect the department and location of the shortcode.
@@ -123,6 +147,8 @@ function jobscience_pagination_callback( page_no, obj, call_type ) {
 
 		// Call the function to calculate the number of column and set the width of the columns.
 		jobscience_set_width();
+		// Call the function to replace the image links from Job Description.
+		jobscience_image_link_replace();
 		obj.find( ".js-pagination" ).html( response.pagination );
 		if ( 1 === call_type ) {
 			jQuery( ".js-matching-job-count" ).text( ' | ' + response.match + '  Matches' );

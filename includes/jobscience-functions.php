@@ -143,13 +143,6 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = NULL ) {
 						$replacements[0] = '';
 						$replacements[1] = '';
 
-						// If anyone use the upload image functionality to add any images with any job desccription on Salesforce, then the images will not display from WordPress.
-						// To solve the problem we need to replace the domain from the /servlet/rtaImage image link with the domain of the job apply link.
-						$remove_part = '/ts2__jobdetails\?' . $link_parts . '/';
-						$rta_img_link = preg_replace( $remove_part, '', $link );
-						$patterns[2] = '/src="(.*?)\/servlet\/rtaImage/';
-						$replacements[2] = 'src="' . $rta_img_link . 'servlet/rtaImage';
-
 						// Remove the inline css and the class from the description.
 						$content = preg_replace( $patterns, $replacements, $content );
 						$temp['description'] = $content;
@@ -487,6 +480,25 @@ function jobscience_get_meta_key() {
 		}
 		return $return_array;
 	}
+}
+
+/**
+ * This function will return the rss tag details (rss tag, custom name, field type) of any field.
+ * @param text $field_meta_key Meta Key of the field.
+ */
+function jobscience_get_rss_tag_details( $field_meta_key ) {
+	// Get the rss tags name from option table.
+	$rss_tag = get_option( 'js-rss-tag' );
+
+	if ( is_array( $rss_tag ) && ! empty( $rss_tag ) ) {
+		foreach ( $rss_tag as $tag ) {
+			$custom_name = 'js_job_' . strtolower( str_replace( ' ', '_', $tag['custom_name'] ) );
+			if ( $custom_name == $field_meta_key ) {
+				return $tag;
+			}
+		}
+	}
+	return $field_meta_key;
 }
 
 /**

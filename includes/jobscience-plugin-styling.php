@@ -10,9 +10,6 @@
 // Include the function file.
 require_once( JS_PLUGIN_DIR . '/includes/jobscience-functions.php' );
 
-// Save the path of the custom css file.
-$custom_css_path = JS_PLUGIN_DIR . '/css/jobscience-custom.css';
-
 // Check the nonce field is present or not.
 if ( isset( $_POST['jobscience_styling_nonce_name'] ) ) {
 	// Verify he nonce field.
@@ -63,23 +60,15 @@ if ( isset( $_POST['jobscience_styling_nonce_name'] ) ) {
 		}
 	}
 } else if ( isset( $_POST['jobscience_custom_css_nonce_name'] ) ) {
-	// Check the custom css file permission. and Verify he nonce field.
-	if ( is_writable( $custom_css_path ) && wp_verify_nonce( sanitize_text_field( $_POST['jobscience_custom_css_nonce_name'] ), 'jobscience_custom_css_nonce' ) ) {
-		// Write the custom css on jobscience-custom.css file.
-		file_put_contents( $custom_css_path, $_POST['js_custom_css_field'], LOCK_EX );
+	// Verify he nonce field.
+	if ( wp_verify_nonce( sanitize_text_field( $_POST['jobscience_custom_css_nonce_name'] ), 'jobscience_custom_css_nonce' ) ) {
+		// Save the custom css on option table.
+		update_option( 'js_custom_css', $_POST['js_custom_css_field'] );
 	}
 }
 ?>
 
 <div id="jobscience-plugin-configure" class="wrap">
-<?php
-// Check the custom css file permission.
-if ( ! is_writable( $custom_css_path ) ) {
-?>
-	<div class="update-nag">The <strong>jobscience-custom.css</strong> file is not writable, please change the file permission.</div>
-<?php
-}
-?>
 	<h2>JobScience Plugin Styling</h2>
 	<h3>Arrange the fields position on Job Listing Page.</h3>
 		<?php
@@ -226,8 +215,8 @@ if ( ! is_writable( $custom_css_path ) ) {
 	<?php
 		// Add the nonce field.
 		wp_nonce_field( 'jobscience_custom_css_nonce', 'jobscience_custom_css_nonce_name' );
-		// Get the existing css from jobscience-custom.css file.
-		$custom_css = file_get_contents( $custom_css_path );
+		// Get the existing css from option table.
+		$custom_css = get_option( 'js_custom_css' );
 	?>
 		<h3>Add Custom CSS</h3>
 		<textarea name="js_custom_css_field" id="js-custom-css-field" rows="10" cols="30" ><?php echo esc_textarea( $custom_css ); ?></textarea>

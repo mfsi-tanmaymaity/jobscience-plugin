@@ -29,7 +29,7 @@ function jobscience_add_js_css_file() {
 	}
 	// Include css file.
 	wp_enqueue_style( 'jobscience-main-css', plugins_url( '/css/jobscience.css', __FILE__ ) );
-	wp_enqueue_style( 'jobscience-custom-css', plugins_url( '/css/jobscience-custom.css', __FILE__ ) );
+	//wp_enqueue_style( 'jobscience-custom-css', plugins_url( '/css/jobscience-custom.css', __FILE__ ) );
 
 	// Include the js file for ajax and localize the js file so that we can use PHP value the js file and call the ajax.
 	wp_enqueue_script( 'shortcode-pagination', plugins_url( '/js/jobscience-ajax.js', __FILE__ ), array( 'jquery' ) );
@@ -100,6 +100,16 @@ function function_remove_row_actions( $actions, $post )
 	unset( $actions['trash'] );
 	unset( $actions['inline hide-if-no-js'] );
 
+	return $actions;
+}
+
+/**
+ * Remove bulk ation for custom post type.
+ */
+add_filter( 'bulk_actions-edit-jobscience_job', 'jobscience_remove_bulk_action' );
+function jobscience_remove_bulk_action( $actions ){
+	unset( $actions['edit'] );
+	unset( $actions['trash'] );
 	return $actions;
 }
 
@@ -383,6 +393,9 @@ function jobscience_pagination_search_callback() {
 					if ( 'content' !== $meta_key ) {
 						// Get the meta value from the postmeta table.
 						$meta_value = get_post_meta( $id, $meta_key, true );
+						// If the field type is date then check the current date format and change the vaue on the current format.
+						$rss_tag_detail = jobscience_get_rss_tag_details( $meta_key );
+						$meta_value = 'date' == $rss_tag_detail['rss_field_type'] && ! empty( $meta_value) && strtotime( $meta_value ) ? date( get_option( 'date_format' ), strtotime( $meta_value ) ) : $meta_value;
 					} else {
 						$word_count = get_option( 'js_content_count', 100 );
 						// Get the post content.
@@ -537,6 +550,9 @@ function jobscience_get_single_job() {
 												// The the meta key is not empty.
 												if ( $job_meta_key ) {
 													$meta_value = get_post_meta( $job_post_id, $job_meta_key, true );
+													// If the field type is date then check the current date format and change the vaue on the current format.
+													$rss_tag_detail = jobscience_get_rss_tag_details( $job_meta_key );
+													$meta_value = 'date' == $rss_tag_detail['rss_field_type'] && ! empty( $meta_value) && strtotime( $meta_value ) ? date( get_option( 'date_format' ), strtotime( $meta_value ) ) : $meta_value;
 													echo '<p class="' . $field_class . '" style="' . $field_style . '" >' . $start_text_format . $meta_value . $end_text_format . '</p>';
 												}
 											}
@@ -660,4 +676,17 @@ function jobscience_deactivation() {
 
 	// Remove all configure data from option table.
 	delete_option( 'js-organization' );
+}
+
+/**
+ * Hook function for add the custom css on front end.
+ */
+add_action('wp_head','jobscience_custom_css');
+function jobscience_custom_css() {
+	$custom_css = get_option( 'js_custom_css' );
+	if ( ! empty( $custom_css ) ) {
+		$output='<style>' . $custom_css . '</style>';
+		echo $output;
+	}
+
 }
