@@ -42,14 +42,14 @@ if ( ! $plugin_configure ) {
 
 $org_id = $id = $job_open = '';
 
-header( 'Content-Type: text/html; charset=utf-8' );
+header("Content-Type: text/plain\r\n");
 ob_start();
 
 $capturedData = file_get_contents( 'php://input' );
 //$content = fread( $capturedData, 5000 );
-	$outputFile = fopen( 'capturedData.txt', 'a' );
-	fwrite( $outputFile, PHP_EOL . $capturedData );
-	fclose( $outputFile );
+	//$outputFile = fopen( 'capturedData.txt', 'a' );
+	//fwrite( $outputFile, PHP_EOL . $capturedData );
+	//fclose( $outputFile );
 // Enable the XML error handling.
 libxml_use_internal_errors( true );
 $xml = simplexml_load_string( (string) $capturedData );
@@ -173,5 +173,5 @@ if ( $organization == $org_id ) {
 }
 
 fclose( $capturedData );
-
+ob_end_clean();
 print jobscience_outbound_respond( 'true' );

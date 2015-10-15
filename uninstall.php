@@ -30,4 +30,4 @@ delete_option( 'js_fields_heading' );
 delete_option( 'js_title_heading' );
 delete_option( 'js_content_count' );
 delete_option( 'js_total_number' );
-
+delete_option( 'js_custom_css' );

@@ -107,7 +107,7 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = NULL ) {
 						// Run a loop for the rss tag.
 						foreach ( $rss_tag as $tag ) {
 							$custom_name = 'js_job_' . strtolower( str_replace( ' ', '_', $tag['custom_name'] ) );
-							//
+							// ts2__Date_Posted__c and pubDate are same in RSS Feed.
 							if ( 'ts2__Date_Posted__c' == $tag['tag']) {
 								$tag_data = $item->get_item_tags( '', 'pubDate' );
 							} else {
@@ -383,9 +383,6 @@ function jobscience_get_matching_job( $department, $location, $function, $search
 		$search = '%' . $search . '%';
 		$search_array = array( $search );
 
-		//$join .= ' INNER JOIN
-					//wp_postmeta meta4
-					//ON post.ID = meta4.post_id ';
 		$where .= ' AND
 					( post.post_title LIKE %s
 					OR
