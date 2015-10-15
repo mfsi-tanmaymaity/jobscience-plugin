@@ -340,10 +340,10 @@ function jobscience_job_template_menu() {
  */
 function jobscience_pagination_search_callback() {
 	// Collect all data from the $_POST.
-	$departments = isset( $_POST['department'] ) ? $_POST['department'] : '';
-	$locations = isset( $_POST['location'] ) ? $_POST['location'] : '';
-	$function = isset( $_POST['job_function'] ) ? $_POST['job_function'] : '';
-	$search = isset( $_POST['search'] ) ? $_POST['search'] : '';
+	$departments = isset( $_POST['department'] ) ? stripslashes( $_POST['department'] ) : '';
+	$locations = isset( $_POST['location'] ) ? stripslashes( $_POST['location'] ) : '';
+	$function = isset( $_POST['job_function'] ) ? stripslashes( $_POST['job_function'] ) : '';
+	$search = isset( $_POST['search'] ) ? stripslashes( $_POST['search'] ) : '';
 	$js_post_per_page = isset( $_POST['js_post_per_page'] ) ? $_POST['js_post_per_page'] : 10;
 	$offset = isset( $_POST['offset'] ) ? $_POST['offset'] : 0;
 	$position = isset( $_POST['position'] ) ? $_POST['position'] : 'horizontally';

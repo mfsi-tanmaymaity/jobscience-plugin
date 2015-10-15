@@ -101,6 +101,7 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = NULL ) {
 						// Create a temporary array with all data of any job.
 						$temp = array();
 						$temp['title'] = $item->get_title();
+						$temp['title'] = htmlspecialchars_decode( $temp['title'], ENT_QUOTES );
 						$temp['link'] = $link;
 						$temp['id'] = $job_id;
 
@@ -135,6 +136,7 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = NULL ) {
 
 						$tag_description = $item->get_item_tags( '', 'description' );
 						$content = $tag_description[0]['data'];
+						$content = htmlspecialchars_decode( $content, ENT_QUOTES );
 						// Create the patterns and replacement array.
 						$patterns = array();
 						$patterns[0] = '/class="(.*?)"/';
