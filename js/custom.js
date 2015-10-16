@@ -222,6 +222,10 @@ jQuery( document ).ready( function() {
 		jQuery(this).toggleClass('div_show');
 	});
 
+	// Make the title and content field readonly on the job edit page.
+	jQuery( 'input#title', '.post-type-jobscience_job' ).prop( 'readonly', 'readonly' );
+	jQuery( 'textarea#content', '.post-type-jobscience_job' ).prop( 'readonly', 'readonly' );
+
 	jQuery('.js-template-field-color').wpColorPicker();
 
 	jQuery(".js-template-added-fields").sortable({

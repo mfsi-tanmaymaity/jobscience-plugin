@@ -158,7 +158,7 @@ function jobscience_meta_section_html( $post ) {
 ?>
 			<div id="js-job-meta-<?php echo $tag['custom_name']; ?>" class="js-job-meta">
 				<label for="js_job_<?php echo $tag['custom_name']; ?>"><b>Job <?php echo ucwords( $tag['custom_name'] ); ?>:</b></label>
-				<input type="text" name="js_job_<?php echo strtolower( $tag['custom_name'] ); ?>" id="js-job-<?php echo $tag['custom_name']; ?>" value="<?php echo $value; ?>"/>
+				<input type="text" name="js_job_<?php echo strtolower( $tag['custom_name'] ); ?>" id="js-job-<?php echo $tag['custom_name']; ?>" value="<?php echo $value; ?>" readonly />
 			</div>
 <?php
 		}
@@ -172,7 +172,7 @@ function jobscience_meta_section_html( $post ) {
 ?>
 			<div id="js-job-meta-<?php echo $field; ?>" class="js-job-meta">
 				<label for="js_job_<?php echo $field; ?>"><b>Job <?php echo ucwords( $field ); ?>:</b></label>
-				<input type="text" name="js_job_<?php echo $field; ?>" id="js-job-<?php echo $field; ?>" value="<?php echo $value; ?>"/>
+				<input type="text" name="js_job_<?php echo $field; ?>" id="js-job-<?php echo $field; ?>" value="<?php echo $value; ?>" readonly/>
 			</div>
 <?php
 		}

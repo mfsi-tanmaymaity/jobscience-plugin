@@ -9,6 +9,9 @@
 .post-type-jobscience_job  #poststuff #side-sortables.empty-container {
     border: none;
 }
+.post-type-jobscience_job #post-status-info #last-edit {
+    display: none;
+}
 /* End. */
 
 /* Generate Shortcode page style  */
