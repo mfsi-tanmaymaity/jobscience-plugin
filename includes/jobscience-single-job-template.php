@@ -6,6 +6,7 @@
  * Date			: 09/08/2015 (MM/DD/YYYY)
  * @package		: Job Manager JobScience plugin
  */
+
 ?>
 
 <div id="jobscience-single-job-template" class="wrap">
@@ -23,18 +24,18 @@
 		$format = isset( $_POST['js_job_template_format'] ) ? $_POST['js_job_template_format'] : 1;
 		$template_data = isset( $_POST['js_section'] ) ? $_POST['js_section'] : '';
 
-		// run a loop to check all template data.
+		// Run a loop to check all template data.
 		if ( is_array( $template_data ) ) {
 			foreach ( $template_data as $key => $section ) {
 				// Width validation check.
-				$template_data[$key]['width'] = isset( $section['width'] ) && is_numeric( $section['width'] ) && $section['width'] <= 100 && $section['width'] >= 1 ? $section['width'] : 100;
+				$template_data[ $key ]['width'] = isset( $section['width'] ) && is_numeric( $section['width'] ) && $section['width'] <= 100 && $section['width'] >= 1 ? $section['width'] : 100;
 			}
 		}
 
 		// Create the full template as array.
 		$js_single_template = array(
-				'format' =>			$format,
-				'tempalte_data' =>	$template_data,
+				'format' => $format,
+				'tempalte_data' => $template_data,
 			);
 		update_option( 'js-job-template', $js_single_template );
 	}
@@ -93,27 +94,27 @@
 
 			// Run loop.
 			if ( is_array( $rss_tag ) ) {
-				foreach ( $rss_tag  as $key => $value ) {
+				foreach ( $rss_tag  as $value ) {
 					$add_field .= '<option value="' . $value['tag'] . '">' . $value['custom_name'] . '</option>';
 				}
 			}
 
 			$add_field .= '</select>';
 			// Run a loop if the $format_array is an array.
-			if( is_array( $format_array ) ) {
+			if ( is_array( $format_array ) ) {
 				$section_count = 1;
 				foreach ( $format_array as $key => $value ) {
 			?>
 					<div id="js-template-row-<?php echo $key; ?>" class="js-template-row" >
-			<?php
-					if( is_array( $value ) ) {
+					<?php
+					if ( is_array( $value ) ) {
 						foreach ( $value as $key1 => $value1 ) {
 							// Save the current section data in a array.
-							$current_section_data = isset( $current_template['tempalte_data'][$section_count] ) ? $current_template['tempalte_data'][$section_count] : array();
+							$current_section_data = isset( $current_template['tempalte_data'][ $section_count ] ) ? $current_template['tempalte_data'][ $section_count ] : array();
 							// If the saved format and current format is same then display all value from database, else display default value.
 							if ( $current_template['format'] == $format ) {
 								// Get the width of current section from current template or from the template format array.
-								$width = isset( $current_section_data['width']) ? $current_section_data['width'] : $value1;
+								$width = isset( $current_section_data['width'] ) ? $current_section_data['width'] : $value1;
 							} else {
 								$width = $value1;
 							}
@@ -142,9 +143,9 @@
 
 													if ( false !== $custom_name ) {
 														// Get the font size for the current field.
-														$font_size = isset( $current_section_data['font_size'][$field_key] ) ? $current_section_data['font_size'][$field_key] : '';
-														$color = isset( $current_section_data['color'][$field_key] ) ? $current_section_data['color'][$field_key] : '';
-														$text_format = isset( $current_section_data['text_format'][$field_key] ) ? $current_section_data['text_format'][$field_key] : '';
+														$font_size = isset( $current_section_data['font_size'][ $field_key ] ) ? $current_section_data['font_size'][ $field_key ] : '';
+														$color = isset( $current_section_data['color'][ $field_key ] ) ? $current_section_data['color'][ $field_key ] : '';
+														$text_format = isset( $current_section_data['text_format'][ $field_key ] ) ? $current_section_data['text_format'][ $field_key ] : '';
 														// Create the HTML for each added field in the templete preview section.
 													?>
 														<div class="js-template-job-field">

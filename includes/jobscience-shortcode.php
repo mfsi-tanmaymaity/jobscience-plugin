@@ -132,7 +132,7 @@ function jobscience_jobscience_shortcode( $atts ) {
 				<p class="js-matching-job-count"></p>
 			</div>
 			<div class="js-pagination">
-			<?php
+				<?php
 				if ( $matched > 0 ) {
 					echo jobscience_pagination_create( $matched, $job_per_page, 1 );
 				}
@@ -202,7 +202,7 @@ function jobscience_jobscience_shortcode( $atts ) {
 								$meta_value = get_post_meta( $id, $meta_key, true );
 								// If the field type is date then check the current date format and change the vaue on the current format.
 								$rss_tag_detail = jobscience_get_rss_tag_details( $meta_key );
-								$meta_value = 'date' == $rss_tag_detail['rss_field_type'] && ! empty( $meta_value) && strtotime( $meta_value ) ? date( get_option( 'date_format' ), strtotime( $meta_value ) ) : $meta_value;
+								$meta_value = 'date' == $rss_tag_detail['rss_field_type'] && ! empty( $meta_value ) && strtotime( $meta_value ) ? date( get_option( 'date_format' ), strtotime( $meta_value ) ) : $meta_value;
 							} else {
 								$word_count = get_option( 'js_content_count', 100 );
 								// Get the post content.

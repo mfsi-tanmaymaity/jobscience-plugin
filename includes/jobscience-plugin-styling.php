@@ -149,7 +149,7 @@ if ( isset( $_POST['jobscience_styling_nonce_name'] ) ) {
 	<?php
 	// For all meta field.
 	if ( is_array( $meta_keys ) ) {
-		foreach ( $meta_keys as $key => $meta_key ) {
+		foreach ( $meta_keys as $meta_key ) {
 			// Skip the job id and siteURL.
 			if ( 'js_job_id' !== $meta_key && 'js_job_siteURL' !== $meta_key ) {
 				// Check that the meta_key is already set as display field or not.

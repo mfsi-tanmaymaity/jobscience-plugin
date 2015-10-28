@@ -8,7 +8,7 @@
  **/
 
 /**
- * return the format of the template.
+ * Return the format of the template.
  * @param int $format Number of format.
  */
 function jobscience_get_template_formate( $format ) {
@@ -34,7 +34,7 @@ function jobscience_get_template_formate( $format ) {
 			break;
 
 		default:
-			// Default will work for "case 1" also
+			// Default will work for "case 1" also.
 			$format_array = array( 1 => array( 1 => 100 ) );
 			break;
 	}

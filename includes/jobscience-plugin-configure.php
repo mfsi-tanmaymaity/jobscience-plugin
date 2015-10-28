@@ -112,7 +112,7 @@ if ( isset( $_POST['jobscience_configure_nonce_name'] ) && wp_verify_nonce( wp_u
 		$js_all_meta_keys = jobscience_get_all_meta_key();
 		$js_meta_keys = jobscience_get_meta_key();
 
-		// Add Job ID and job Siteurl meta key to not add them in remove meta key
+		// Add Job ID and job Siteurl meta key to not add them in remove meta key.
 		array_push( $js_meta_keys, 'js_job_id', 'js_job_siteURL' );
 
 		// Remove $js_meta_keys from $js_all_meta_keys to get a array which will contain the meta key which is not using.
@@ -121,7 +121,7 @@ if ( isset( $_POST['jobscience_configure_nonce_name'] ) && wp_verify_nonce( wp_u
 			$remove_meta_keys = array_diff( $js_all_meta_keys, $js_meta_keys );
 		}
 
-		// Check the array is not empty
+		// Check the array is not empty.
 		if ( is_array( $remove_meta_keys ) && ! empty( $remove_meta_keys ) ) {
 			// Get display fields name from the option table.
 			$display_fields = get_option( 'js_display_fields' );
@@ -283,7 +283,7 @@ if ( ! $plugin_configure ) {
 if ( $plugin_configure && is_array( $rss_tag ) && ! empty( $rss_tag )  ) {
 ?>
 	<h3>RSS Feed URL Form</h3>
-<?php
+	<?php
 	$url_old = get_option( 'js-rss-feed-url' );
 	if ( ! empty( $url_old ) ) {
 	?>
@@ -345,7 +345,7 @@ if ( $plugin_configure && is_array( $rss_tag ) && ! empty( $rss_tag )  ) {
 		<li><strong>Name</strong></li>
 		<li><strong>ts2__Job_Description__c</strong></li>
 		<li><strong>ts2__Post_Job__c</strong></li>
-	<?php
+		<?php
 		// Check the variable is array and not empty.
 		if ( is_array( $rss_tag ) && ! empty( $rss_tag ) ) {
 			// Run loop.

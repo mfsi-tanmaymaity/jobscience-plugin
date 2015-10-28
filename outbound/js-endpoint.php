@@ -6,6 +6,7 @@
  * Date			: 07/10/2015 (MM/DD/YYYY)
  * @package		: Job Manager JobScience plugin
  **/
+
 // If the token is not present in the URL then return false.
 $url_token = isset( $_GET['js-token'] ) ? $_GET['js-token'] : false;
 
@@ -42,7 +43,7 @@ if ( ! $plugin_configure ) {
 
 $org_id = $id = $job_open = '';
 
-header("Content-Type: text/plain\r\n");
+header( "Content-Type: text/plain\r\n" );
 ob_start();
 
 $capturedData = file_get_contents( 'php://input' );
@@ -85,20 +86,20 @@ if ( false !== $xml ) {
 		foreach ( $rss_tag as $tag ) {
 			$custom_name = 'js_job_' . strtolower( str_replace( ' ', '_', $tag['custom_name'] ) );
 			$tag_data = $job_tag->$tag['tag'];
-			$tag_data = (string)$tag_data;
+			$tag_data = (string) $tag_data;
 
 			// Run a switch case.
 			switch ( $tag['rss_field_type'] ) {
 				case 'int':
-					$tag_data = ! empty( $tag_data) ? intval( $tag_data ) : '';
+					$tag_data = ! empty( $tag_data ) ? intval( $tag_data ) : '';
 					break;
 
 				case 'salary':
-					$tag_data = is_numeric( $tag_data ) && ! empty( $tag_data) ? number_format( $tag_data, 2, '.', ',' ) : '';
+					$tag_data = is_numeric( $tag_data ) && ! empty( $tag_data ) ? number_format( $tag_data, 2, '.', ',' ) : '';
 					break;
 
 				case 'date':
-					$tag_data = ! empty( $tag_data) && strtotime( $tag_data ) ? date( get_option( 'date_format' ), strtotime( $tag_data ) ) : '';
+					$tag_data = ! empty( $tag_data ) && strtotime( $tag_data ) ? date( get_option( 'date_format' ), strtotime( $tag_data ) ) : '';
 					break;
 			}
 			$temp[ $custom_name ] = $tag_data;
@@ -125,7 +126,7 @@ if ( $organization == $org_id ) {
 	// Get the post ID of the job.
 	$jod_post_id = jobscience_get_post_id( $id, 'js_job_id' );
 	// If the job open is true then change the job's post status in publish.
-	if ( $job_open == 'true' ) {
+	if ( 'true' == $job_open  ) {
 		$status = 'publish';
 	} else {
 		// Else change the post status in draft.
@@ -153,8 +154,8 @@ if ( $organization == $org_id ) {
 		// Update post.
 		$post_arg = array(
 			'ID'           => $jod_post_id,
-			'post_title'   => (string)$job_name,
-			'post_content' => (string)$job_description,
+			'post_title'   => (string) $job_name,
+			'post_content' => (string) $job_description,
 			'post_status' => $status,
 		);
 
@@ -163,7 +164,7 @@ if ( $organization == $org_id ) {
 
 		// Run a loop to update all meta field.
 		foreach ( $temp as $key => $value ) {
-			update_post_meta( $jod_post_id, $key, (string)$value );
+			update_post_meta( $jod_post_id, $key, (string) $value );
 		}
 	}
 	$outputFile = fopen( 'outbound_result.txt', 'a' );

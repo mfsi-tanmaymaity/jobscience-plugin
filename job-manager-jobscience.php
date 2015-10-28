@@ -22,14 +22,13 @@ function jobscience_add_js_css_file() {
 	// Include the shortable and color-picker.
 	wp_enqueue_script( 'jquery-ui-sortable' );
 	wp_enqueue_style( 'wp-color-picker' );
-	wp_enqueue_script( 'wp-color-picker');
+	wp_enqueue_script( 'wp-color-picker' );
 	// Include the js file for dashboard.
-	if( is_admin() ) {
+	if ( is_admin() ) {
 		wp_enqueue_script( 'jobscience-js', plugins_url( '/js/custom.js', __FILE__ ), array( 'jquery' ) );
 	}
 	// Include css file.
 	wp_enqueue_style( 'jobscience-main-css', plugins_url( '/css/jobscience.css', __FILE__ ) );
-	//wp_enqueue_style( 'jobscience-custom-css', plugins_url( '/css/jobscience-custom.css', __FILE__ ) );
 
 	// Include the js file for ajax and localize the js file so that we can use PHP value the js file and call the ajax.
 	wp_enqueue_script( 'shortcode-pagination', plugins_url( '/js/jobscience-ajax.js', __FILE__ ), array( 'jquery' ) );
@@ -78,8 +77,8 @@ function register_jobscience_job() {
 								'slug' => 'job',
 								),
 		'capability_type'    => 'post',
-        'capabilities'       => array( 'create_posts' => false ),
-        'map_meta_cap'       => true,
+		'capabilities'       => array( 'create_posts' => false ),
+		'map_meta_cap'       => true,
 	);
 
 	// Register the custom post type.
@@ -89,12 +88,11 @@ function register_jobscience_job() {
 /**
  * Remove quick edit for custom post type.
  */
-add_filter( 'post_row_actions', 'function_remove_row_actions', 10, 2 );
-function function_remove_row_actions( $actions, $post )
-{
+function function_remove_row_actions( $actions, $post ) {
 	global $current_screen;
-	if( $current_screen->post_type != 'jobscience_job' )
+	if ( $current_screen->post_type != 'jobscience_job' ) {
 		return $actions;
+	}
 	unset( $actions['edit'] );
 	unset( $actions['view'] );
 	unset( $actions['trash'] );
@@ -102,22 +100,23 @@ function function_remove_row_actions( $actions, $post )
 
 	return $actions;
 }
+add_filter( 'post_row_actions', 'function_remove_row_actions', 10, 2 );
 
 /**
  * Remove bulk ation for custom post type.
  */
-add_filter( 'bulk_actions-edit-jobscience_job', 'jobscience_remove_bulk_action' );
-function jobscience_remove_bulk_action( $actions ){
+function jobscience_remove_bulk_action( $actions ) {
 	unset( $actions['edit'] );
 	unset( $actions['trash'] );
 	return $actions;
 }
+add_filter( 'bulk_actions-edit-jobscience_job', 'jobscience_remove_bulk_action' );
 
 /**
  * Remove Publish meta box for custom post type.
  */
 function function_remove_publish_box() {
-    remove_meta_box( 'submitdiv', 'jobscience_job', 'side' );
+	remove_meta_box( 'submitdiv', 'jobscience_job', 'side' );
 }
 add_action( 'admin_menu', 'function_remove_publish_box' );
 
@@ -299,7 +298,7 @@ function jobscience_create_shortcode_menu() {
 							}
 							?>
 						</select>
-						<?php $hidden_id = strtolower( str_replace( array( 'ts2__Job_', 'ts2__', '__c', '_'), array( "", "", "", '-' ), $tag['tag'] ) ); ?>
+						<?php $hidden_id = strtolower( str_replace( array( 'ts2__Job_', 'ts2__', '__c', '_' ), array( '', '', '', '-' ), $tag['tag'] ) ); ?>
 						<input type="hidden" id="js-shortcode-<?php echo $hidden_id; ?>" />
 					</div>
 		<?php
@@ -395,7 +394,7 @@ function jobscience_pagination_search_callback() {
 						$meta_value = get_post_meta( $id, $meta_key, true );
 						// If the field type is date then check the current date format and change the vaue on the current format.
 						$rss_tag_detail = jobscience_get_rss_tag_details( $meta_key );
-						$meta_value = 'date' == $rss_tag_detail['rss_field_type'] && ! empty( $meta_value) && strtotime( $meta_value ) ? date( get_option( 'date_format' ), strtotime( $meta_value ) ) : $meta_value;
+						$meta_value = 'date' == $rss_tag_detail['rss_field_type'] && ! empty( $meta_value ) && strtotime( $meta_value ) ? date( get_option( 'date_format' ), strtotime( $meta_value ) ) : $meta_value;
 					} else {
 						$word_count = get_option( 'js_content_count', 100 );
 						// Get the post content.
@@ -496,28 +495,28 @@ function jobscience_get_single_job() {
 		ob_start();
 ?>
 		<div id="js-single-job">
-		<?php
+			<?php
 			foreach ( $format_array as $key => $value ) {
-		?>
+			?>
 				<div id="js-single-job-row-<?php echo $key; ?>" class="js-single-job-row" >
-				<?php
+					<?php
 					if ( is_array( $value ) ) {
 						foreach ( $value as $key1 => $value1 ) {
 							// Save the current section data in a array.
-							$current_section_data = isset( $current_template['tempalte_data'][$section_count] ) ? $current_template['tempalte_data'][$section_count] : array();
+							$current_section_data = isset( $current_template['tempalte_data'][ $section_count ] ) ? $current_template['tempalte_data'][ $section_count ] : array();
 							// Get the width of current section from current template or from the template format array.
-							$width = isset( $current_section_data['width']) ? $current_section_data['width'] : $value1;
+							$width = isset( $current_section_data['width'] ) ? $current_section_data['width'] : $value1;
 							// Create Added Fields section for the current template part.
 							$fields = isset( $current_section_data['fields'] ) ? $current_section_data['fields'] : array();
 				?>
 							<div class="js-single-job-col-<?php echo $key1; ?> js-single-job-column" style="width: <?php echo $width; ?>%;" >
 								<div class="js_inside">
-								<?php
+									<?php
 									if ( is_array( $fields ) ) {
 										foreach ( $fields as $key2 => $field ) {
 											$field_class = 'js-single-job-field-' . $section_count . $key2;
-											$font_size = isset( $current_section_data['font_size'][$key2] ) ? $current_section_data['font_size'][$key2] : '';
-											$color = isset( $current_section_data['color'][$key2] ) ? $current_section_data['color'][$key2] : '';
+											$font_size = isset( $current_section_data['font_size'][ $key2 ] ) ? $current_section_data['font_size'][ $key2 ] : '';
+											$color = isset( $current_section_data['color'][ $key2 ] ) ? $current_section_data['color'][ $key2 ] : '';
 											// Create the style for current field.
 											$field_style = '';
 											if ( ! empty( $font_size ) ) {
@@ -527,7 +526,7 @@ function jobscience_get_single_job() {
 												$field_style .= 'color: ' . $color . '; ';
 											}
 
-											$text_format = isset( $current_section_data['text_format'][$key2] ) ? $current_section_data['text_format'][$key2] : '';
+											$text_format = isset( $current_section_data['text_format'][ $key2 ] ) ? $current_section_data['text_format'][ $key2 ] : '';
 											$start_text_format = '';
 											$end_text_format = '';
 											if ( 'bold' == $text_format ) {
@@ -552,7 +551,7 @@ function jobscience_get_single_job() {
 													$meta_value = get_post_meta( $job_post_id, $job_meta_key, true );
 													// If the field type is date then check the current date format and change the vaue on the current format.
 													$rss_tag_detail = jobscience_get_rss_tag_details( $job_meta_key );
-													$meta_value = 'date' == $rss_tag_detail['rss_field_type'] && ! empty( $meta_value) && strtotime( $meta_value ) ? date( get_option( 'date_format' ), strtotime( $meta_value ) ) : $meta_value;
+													$meta_value = 'date' == $rss_tag_detail['rss_field_type'] && ! empty( $meta_value ) && strtotime( $meta_value ) ? date( get_option( 'date_format' ), strtotime( $meta_value ) ) : $meta_value;
 													echo '<p class="' . $field_class . '" style="' . $field_style . '" >' . $start_text_format . $meta_value . $end_text_format . '</p>';
 												}
 											}
@@ -599,10 +598,10 @@ add_action( 'wp_ajax_nopriv_get_single_job', 'jobscience_get_single_job' );
  */
 function jobscience_pagination_reset_callback() {
 	// Collect all data from the $_POST.
-	$departments = isset( $_POST['department'] ) ? $_POST['department'] : '';
-	$locations = isset( $_POST['location'] ) ? $_POST['location'] : '';
-	$function = isset( $_POST['job_function'] ) ? $_POST['job_function'] : '';
-	$search = isset( $_POST['search'] ) ? trim( $_POST['search'] ) : '';
+	$departments = isset( $_POST['department'] ) ? stripslashes( $_POST['department'] ) : '';
+	$locations = isset( $_POST['location'] ) ? stripslashes( $_POST['location'] ) : '';
+	$function = isset( $_POST['job_function'] ) ? stripslashes( $_POST['job_function'] ) : '';
+	$search = isset( $_POST['search'] ) ? stripslashes( $_POST['search'] ) : '';
 	$js_post_per_page = isset( $_POST['js_post_per_page'] ) ? $_POST['js_post_per_page'] : 10;
 
 	// Include the function file.
@@ -681,12 +680,12 @@ function jobscience_deactivation() {
 /**
  * Hook function for add the custom css on front end.
  */
-add_action('wp_head','jobscience_custom_css');
 function jobscience_custom_css() {
 	$custom_css = get_option( 'js_custom_css' );
 	if ( ! empty( $custom_css ) ) {
-		$output='<style>' . $custom_css . '</style>';
+		$output = '<style>' . $custom_css . '</style>';
 		echo $output;
 	}
 
 }
+add_action( 'wp_head', 'jobscience_custom_css' );

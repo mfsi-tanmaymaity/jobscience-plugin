@@ -43,16 +43,17 @@ function jobscience_salesforce_configuration( $username, $password, $security ) 
  * Hook Function to reset the feedcache time.
  * @param int $seconds Second.
  */
-function jobscience_reset_feed_cache( $seconds ) {
-	// Change the default feed cache recreation period to 2 hours.
+function jobscience_reset_feed_cache() {
+	// Change the default feed cache recreation period.
 	return 0;
 }
 
 /**
  * SOAP Call to get all active jobs from salesforce.
  * @param string $url URL for the RSS Feed.
+ * @param int    $new_job_id job id.
  */
-function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = NULL ) {
+function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = null ) {
 	// Get the rss tags name from option table.
 	$rss_tag = get_option( 'js-rss-tag' );
 	// Check the variable is array and not empty.
@@ -108,8 +109,8 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = NULL ) {
 						// Run a loop for the rss tag.
 						foreach ( $rss_tag as $tag ) {
 							$custom_name = 'js_job_' . strtolower( str_replace( ' ', '_', $tag['custom_name'] ) );
-							// ts2__Date_Posted__c and pubDate are same in RSS Feed.
-							if ( 'ts2__Date_Posted__c' == $tag['tag']) {
+							// The ts2__Date_Posted__c and pubDate are same in RSS Feed.
+							if ( 'ts2__Date_Posted__c' == $tag['tag'] ) {
 								$tag_data = $item->get_item_tags( '', 'pubDate' );
 							} else {
 								$tag_data = $item->get_item_tags( '', $tag['tag'] );
@@ -119,15 +120,15 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = NULL ) {
 							// Run a switch case.
 							switch ( $tag['rss_field_type'] ) {
 								case 'int':
-									$field_value = ! empty( $field_value) ? intval( $field_value ) : '';
+									$field_value = ! empty( $field_value ) ? intval( $field_value ) : '';
 									break;
 
 								case 'salary':
-									$field_value = is_numeric( $field_value ) && ! empty( $field_value) ? number_format( $field_value, 2, '.', ',' ) : '';
+									$field_value = is_numeric( $field_value ) && ! empty( $field_value ) ? number_format( $field_value, 2, '.', ',' ) : '';
 									break;
 
 								case 'date':
-									$field_value = ! empty( $field_value) && strtotime( $field_value ) ? date( get_option( 'date_format' ), strtotime( $field_value ) ) : '';
+									$field_value = ! empty( $field_value ) && strtotime( $field_value ) ? date( get_option( 'date_format' ), strtotime( $field_value ) ) : '';
 									break;
 							}
 
@@ -162,7 +163,7 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = NULL ) {
 		$wpdb->query( 'SET autocommit = 0;' );
 
 		// If the $new_job_idis null, so the function is not calling from outbound messase.
-		if( is_null( $new_job_id ) ) {
+		if ( is_null( $new_job_id ) ) {
 			// Change the post status as draft of all exist post which are "jobscience_job" post type.
 			$wpdb->query( "UPDATE `wp_posts` SET post_status='draft' WHERE post_type = 'jobscience_job'" );
 		}
@@ -235,7 +236,7 @@ function jobscience_get_custom_name( $rss_feed_tag ) {
 
 	// Check that the $rss_Feed_tag present in the array.
 	if ( is_array( $rss_tag ) ) {
-		foreach ( $rss_tag as $key => $value ) {
+		foreach ( $rss_tag as $value ) {
 			if ( is_array( $value ) && in_array( $rss_feed_tag, $value ) ) {
 				return $value['custom_name'];
 			}
@@ -297,7 +298,7 @@ function jobscience_create_meta_key( $rss_feed_tag ) {
 
 	// Check that the $rss_Feed_tag present in the array.
 	if ( is_array( $rss_tag ) ) {
-		foreach ( $rss_tag as $key => $value ) {
+		foreach ( $rss_tag as $value ) {
 			if ( is_array( $value ) && in_array( $rss_feed_tag, $value ) ) {
 				$return_key = 'js_job_' . strtolower( str_replace( ' ', '_', $value['custom_name'] ) );
 				return $return_key;
@@ -548,7 +549,7 @@ function jobscience_outbound_respond( $returned_msg ) {
 /**
  * Function to check the positing integer number.
  * @param string $number String which need to check for number or not.
- * @param int    $return_value Return value in not number.
+ * @param int    $return_value Return value if not number.
  */
 function jobscience_check_number( $number, $return_value ) {
 	// Check numeric or not.
@@ -565,6 +566,12 @@ function jobscience_check_number( $number, $return_value ) {
 	return intval( $number );
 }
 
+/**
+ * Function to reset the pagination section.
+ * @param int $matched matched job.
+ * @param int $job_per_page Job per page.
+ * @param int $current_page current pagination number.
+ */
 function jobscience_pagination_create( $matched, $job_per_page, $current_page ) {
 	// Calculate the total number number on page.
 	if ( 0 !== $matched % $job_per_page ) {
