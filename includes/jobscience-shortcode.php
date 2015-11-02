@@ -13,13 +13,11 @@
  */
 function jobscience_jobscience_shortcode( $atts ) {
 	// Save all attribute of the shortcode.
-	var_dump($atts);
 	$attribute = shortcode_atts( array(
 		'department'	=> '',
 		'location'		=> '',
 		'function'		=> '',
 	), $atts );
-	var_dump($attribute);
 
 	// Include the function file.
 	require_once( JS_PLUGIN_DIR . '/includes/jobscience-functions.php' );

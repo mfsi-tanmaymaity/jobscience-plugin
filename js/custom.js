@@ -9,30 +9,24 @@
 jQuery( document ).ready( function() {
 	// Shortcode Generation.
 	jQuery( "select.js-shortcode-select-field", "#js-shortcode-generator" ).change( function() {
-		var temp = jQuery( this ).find( "option:selected" ).map( function() { return jQuery( this ).val() } ).get().join( ' , ' );
+		var temp = jQuery( this ).find( "option:selected" ).map( function() { return jQuery( this ).val() } ).get().join( '  ,  ' );
 
 		if ( temp.indexOf( 'all' ) == 0 ) {
 			temp = '';
 		}
 		jQuery( this ).next().val( temp );
 
-		// Get the selected department and location value.
-		var departments = jQuery( "#js-shortcode-department" ).val();
-		var locations = jQuery( "#js-shortcode-location" ).val();
-		var functions = jQuery( "#js-shortcode-function" ).val();
-		var result = '[jobscience';
+		var result = '[jobscience ' + jQuery( "#jobscience-shortcode-picklist" ).val() + ' ';
 
-		if ( undefined !== departments && departments != '' ) {
-			result += ' department="' + departments + '"';
-		}
-
-		if ( undefined !== locations && locations != '' ) {
-			result += ' location="' + locations + '"';
-		}
-
-		if ( undefined !== functions && functions != '' ) {
-			result += ' function="' + functions + '"';
-		}
+		// This loop will search for all picklist field and will create the shortcode parts for the picklist.
+		jQuery( ".jobscience-plcklist-values", "#js-shortcode-generator" ).each( function() {
+			var picklist_id = jQuery( this ).attr( 'id' );
+			var picklist_value = jQuery( this ).val();
+			if ( picklist_value != '' && picklist_id != '' ) {
+				var temp = picklist_id + '="' + picklist_value + '" ';
+				result += temp;
+			};
+		});
 
 		result += ']';
 		// Change the shortcode result value.

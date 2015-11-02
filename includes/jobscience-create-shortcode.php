@@ -95,7 +95,6 @@ if ( isset( $_POST['picklist_nonce_name'] ) && wp_verify_nonce( $_POST['picklist
 	?>
 		<div id="js-shortcode-generator">
 		<?php
-		echo '<pre>';print_r($selected_picklists); echo '</pre>';
 		// Run a loop toget all picklist field.
 		foreach ( $selected_picklists as $selected_picklist ) {
 			// Call the function to create the meta key.
@@ -106,65 +105,35 @@ if ( isset( $_POST['picklist_nonce_name'] ) && wp_verify_nonce( $_POST['picklist
 			$meta_values = jobscience_get_dept_loc_function( $meta_key );
 		?>
 			<div class="js-shortcode-select">
-				<h3>Select <?php echo ucwords( $custom_name ); ?></h3>
+				<h3>Select <?php echo esc_attr( ucwords( $custom_name ) ); ?></h3>
 				<select class="js-shortcode-select-field" multiple="multiple" >
 					<option value="all">All</option>
 					<?php
 					if ( is_array( $meta_values ) ) {
 						foreach ( $meta_values as $meta_value ) {
 					?>
-							<option value="<?php echo $meta_value; ?>"><?php echo ucwords( $meta_value ); ?></option>
+							<option value="<?php echo esc_attr( $meta_value ); ?>"><?php echo esc_attr( ucwords( $meta_value ) ); ?></option>
 					<?php
 						}
 					}
 					?>
 				</select>
-				<?php $hidden_id = strtolower( str_replace( array( 'ts2__Job_', 'ts2__', '__c', '_' ), array( '', '', '', '-' ), $selected_picklist ) ); ?>
-				<input type="hidden" id="js-shortcode-<?php echo $hidden_id; ?>" />
+				<input type="hidden" id="<?php echo esc_attr( $selected_picklist ); ?>" class="jobscience-plcklist-values" />
 			</div>
 		<?php
 		}
 		?>
 		</div>
+		<div id="js-shortcode-result">
+			<h3>Copy below shortcode and use in any Page</h3>
+			<?php
+			$shortcode_picklist = implode( '  ,  ', $selected_picklists );
+			$shortcode_picklist = 'picklist="' . $shortcode_picklist . '"';
+			?>
+			<input type="hidden" id="jobscience-shortcode-picklist" value="<?php echo esc_attr( $shortcode_picklist ); ?>" />
+			<textarea id="js-shortcode-result-field">[jobscience <?php echo esc_attr( $shortcode_picklist ); ?>]</textarea>
+		</div>
 	<?php
 	}
 	?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-	<div id="js-shortcode-generator">
-	<?php
-	// Check the variable is array and not empty.
-	if ( is_array( $rss_tag ) || ! empty( $rss_tag ) ) {
-		// Craete the array with the RSS Feed tag names.
-		$shortcode_array = array( 'ts2__Location__c', 'ts2__Job_Function__c', 'ts2__Department__c' );
-
-		// Run a loop for the rss tag.
-		foreach ( $rss_tag as $tag ) {
-			// Check  the tag is present in the $shortcode_array.
-			if ( in_array( $tag['tag'], $shortcode_array ) ) {
-				// Create the meta key.
-				$meta_key = 'js_job_' . strtolower( str_replace( ' ', '_', $tag['custom_name'] ) );
-
-	?>
-
-	<?php
-			}
-		}
-	}
-	?>
-	</div>
-	<div id="js-shortcode-result">
-		<input type="text" value="[jobscience]" id="js-shortcode-result-field" />
-	</div>
 </div>
