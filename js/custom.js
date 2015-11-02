@@ -11,7 +11,7 @@ jQuery( document ).ready( function() {
 	jQuery( "select.js-shortcode-select-field", "#js-shortcode-generator" ).change( function() {
 		var temp = jQuery( this ).find( "option:selected" ).map( function() { return jQuery( this ).val() } ).get().join( ' , ' );
 
-		if ( temp.indexOf( 'all' ) >= 0 ) {
+		if ( temp.indexOf( 'all' ) == 0 ) {
 			temp = '';
 		}
 		jQuery( this ).next().val( temp );

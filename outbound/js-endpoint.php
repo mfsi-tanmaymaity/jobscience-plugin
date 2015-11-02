@@ -81,7 +81,7 @@ if ( false !== $xml ) {
 	// Get the rss tags name from option table.
 	$rss_tag = get_option( 'js-rss-tag' );
 	// Check the variable is array and not empty.
-	if ( is_array( $rss_tag ) || ! empty( $rss_tag ) ) {
+	if ( is_array( $rss_tag ) && ! empty( $rss_tag ) ) {
 		// Run a loop for the rss tag.
 		foreach ( $rss_tag as $tag ) {
 			$custom_name = 'js_job_' . strtolower( str_replace( ' ', '_', $tag['custom_name'] ) );

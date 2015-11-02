@@ -147,7 +147,7 @@ function jobscience_meta_section_html( $post ) {
 	$rss_tag = get_option( 'js-rss-tag' );
 
 	// Check the variable is array and not empty.
-	if ( is_array( $rss_tag ) || ! empty( $rss_tag ) ) {
+	if ( is_array( $rss_tag ) && ! empty( $rss_tag ) ) {
 		// Run a loop on the rss tag array.
 		foreach ( $rss_tag as $tag ) {
 			// Create the meta key.
@@ -156,7 +156,7 @@ function jobscience_meta_section_html( $post ) {
 			// HTML for the meta box.
 ?>
 			<div id="js-job-meta-<?php echo $tag['custom_name']; ?>" class="js-job-meta">
-				<label for="js_job_<?php echo $tag['custom_name']; ?>"><b>Job <?php echo ucwords( $tag['custom_name'] ); ?>:</b></label>
+				<label for="js_job_<?php echo $tag['custom_name']; ?>"><b><?php echo ucwords( $tag['custom_name'] ); ?>:</b></label>
 				<input type="text" name="js_job_<?php echo strtolower( $tag['custom_name'] ); ?>" id="js-job-<?php echo $tag['custom_name']; ?>" value="<?php echo $value; ?>" readonly />
 			</div>
 <?php
@@ -201,7 +201,7 @@ function jobscience_save_post( $post_id ) {
 	// Get the rss tags name from option table.
 	$rss_tag = get_option( 'js-rss-tag' );
 	// Check the variable is array and not empty.
-	if ( is_array( $rss_tag ) || ! empty( $rss_tag ) ) {
+	if ( is_array( $rss_tag ) && ! empty( $rss_tag ) ) {
 		// Include the function file.
 		require_once( JS_PLUGIN_DIR . '/includes/jobscience-functions.php' );
 
@@ -246,72 +246,7 @@ add_action( 'admin_menu', 'jobscience_add_submenu' );
  */
 function jobscience_create_shortcode_menu() {
 	// Include the function file.
-	require_once( JS_PLUGIN_DIR . '/includes/jobscience-functions.php' );
-?>
-	<div id="create-shortcode-content" class="wrap">
-		<h2>Job Manager by JobScience</h2>
-		<h2>Shortcode Generator</h2>
-
-		<?php
-		// Check the plugin is configure or not.
-		$plugin_configure = get_option( 'js-organization' );
-		if ( ! $plugin_configure ) {
-			echo '<div class="error"><p>The Plugin is not configured. Please configure first.</p></div>';
-		}
-
-		// Valid Rss feed checking.
-		$rss_check = get_option( 'js-rss-feed-url' );
-		if ( ! $rss_check ) {
-			echo '<div class="error"><p>No valid RSS Feed used. Go to Plugin Configure Page.</p></div>';
-		}
-		?>
-
-		<div id="js-shortcode-generator">
-		<?php
-		// Get the rss tags name from option table.
-		$rss_tag = get_option( 'js-rss-tag' );
-		// Check the variable is array and not empty.
-		if ( is_array( $rss_tag ) || ! empty( $rss_tag ) ) {
-			// Craete the array with the RSS Feed tag names.
-			$shortcode_array = array( 'ts2__Location__c', 'ts2__Job_Function__c', 'ts2__Department__c' );
-
-			// Run a loop for the rss tag.
-			foreach ( $rss_tag as $tag ) {
-				// Check  the tag is present in the $shortcode_array.
-				if ( in_array( $tag['tag'], $shortcode_array ) ) {
-					// Create the meta key.
-					$meta_key = 'js_job_' . strtolower( str_replace( ' ', '_', $tag['custom_name'] ) );
-					// Call the function to get all meta value of the meta key.
-					$meta_values = jobscience_get_dept_loc_function( $meta_key );
-		?>
-					<div class="js-shortcode-select">
-						<h3>Select <?php echo ucwords( $tag['custom_name'] ); ?></h3>
-						<select class="js-shortcode-select-field" multiple="multiple" >
-							<option value="all">All</option>
-							<?php
-							if ( is_array( $meta_values ) ) {
-								foreach ( $meta_values as $meta_value ) {
-							?>
-									<option value="<?php echo $meta_value; ?>"><?php echo ucwords( $meta_value ); ?></option>
-							<?php
-								}
-							}
-							?>
-						</select>
-						<?php $hidden_id = strtolower( str_replace( array( 'ts2__Job_', 'ts2__', '__c', '_' ), array( '', '', '', '-' ), $tag['tag'] ) ); ?>
-						<input type="hidden" id="js-shortcode-<?php echo $hidden_id; ?>" />
-					</div>
-		<?php
-				}
-			}
-		}
-		?>
-		</div>
-		<div id="js-shortcode-result">
-			<input type="text" value="[jobscience]" id="js-shortcode-result-field" />
-		</div>
-	</div>
-<?php
+	require_once( JS_PLUGIN_DIR . '/includes/jobscience-create-shortcode.php' );
 }
 
 /**

@@ -13,11 +13,13 @@
  */
 function jobscience_jobscience_shortcode( $atts ) {
 	// Save all attribute of the shortcode.
+	var_dump($atts);
 	$attribute = shortcode_atts( array(
 		'department'	=> '',
 		'location'		=> '',
 		'function'		=> '',
 	), $atts );
+	var_dump($attribute);
 
 	// Include the function file.
 	require_once( JS_PLUGIN_DIR . '/includes/jobscience-functions.php' );
@@ -71,7 +73,7 @@ function jobscience_jobscience_shortcode( $atts ) {
 				// Get the rss tags name from option table.
 				$rss_tag = get_option( 'js-rss-tag' );
 				// Check the variable is array and not empty.
-				if ( is_array( $rss_tag ) || ! empty( $rss_tag ) ) {
+				if ( is_array( $rss_tag ) && ! empty( $rss_tag ) ) {
 					// Craete the array with the RSS Feed tag names.
 					$search_array = array( 'ts2__Location__c', 'ts2__Job_Function__c', 'ts2__Department__c' );
 
