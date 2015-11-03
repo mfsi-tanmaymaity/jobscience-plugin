@@ -72,7 +72,7 @@
 .jobscience-search input, .jobscience-search select, .jobscience-search button {
 	font-size: 13px;
 }
-.js-search-text, .js-search-department, .js-search-location, .js-search-function {
+.js-search-text, .jobscience-picklist-filter {
     padding-right: 20px;
 }
 .jobscience-search select, .jobscience-search input, .jobscience-search button {

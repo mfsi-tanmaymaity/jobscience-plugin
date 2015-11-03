@@ -11,14 +11,8 @@
  * Shortcode function.
  * @param array $atts Shortcode attributes.
  */
-function jobscience_jobscience_shortcode( $atts ) {
+function jobscience_jobscience_shortcode( $attribute ) {
 	// Save all attribute of the shortcode.
-	$attribute = shortcode_atts( array(
-		'department'	=> '',
-		'location'		=> '',
-		'function'		=> '',
-	), $atts );
-
 	// Include the function file.
 	require_once( JS_PLUGIN_DIR . '/includes/jobscience-functions.php' );
 
@@ -30,22 +24,26 @@ function jobscience_jobscience_shortcode( $atts ) {
 		return false;
 	}
 
+	// If the picklist fields attribute not present on the short code then return flase.
+	if ( ! isset( $attribute['picklist'] ) ) {
+		return '<strong>Invalid Shortcode, Picklist attribute not present.<strong>';
+	}
+	$picklist = trim( $attribute['picklist'] );
+	$picklist_array = explode( '  ,  ', $picklist );
+
 	// Set the page per job variable.
 	$job_per_page = get_option( 'js_total_number', 10 );
-
-	// Get the total open job count.
-	$count = jobscience_get_job_count();
 
 	// Set the offset for LIMIT, Initially it will be 0.
 	$offset = 0;
 
 	// Call the function to get all matching job.
-	$results = jobscience_get_matching_job( $attribute['department'], $attribute['location'], $attribute['function'], '', $offset, $job_per_page, false );
+	//$results = jobscience_get_matching_job( $attribute['department'], $attribute['location'], $attribute['function'], '', $offset, $job_per_page, false );
 	// Call the function to get the total number of matching job,
 	// Pass offset and job per page parameters as false
 	// Pass $match parameter as true so that it return total matching job
 	// Passing empty string for search.
-	$matched = jobscience_get_matching_job( $attribute['department'], $attribute['location'], $attribute['function'], '', false, false, true );
+	//$matched = jobscience_get_matching_job( $attribute['department'], $attribute['location'], $attribute['function'], '', false, false, true );
 
 	// Start the internal buffer to save the html in the buffer.
 	ob_start();
@@ -67,56 +65,52 @@ function jobscience_jobscience_shortcode( $atts ) {
 				<div class="js-search-text">
 					<input type="text" value="" class="js-search-text-field" />
 				</div>
+
 				<?php
-				// Get the rss tags name from option table.
-				$rss_tag = get_option( 'js-rss-tag' );
-				// Check the variable is array and not empty.
-				if ( is_array( $rss_tag ) && ! empty( $rss_tag ) ) {
-					// Craete the array with the RSS Feed tag names.
-					$search_array = array( 'ts2__Location__c', 'ts2__Job_Function__c', 'ts2__Department__c' );
+				// Run a loop to get all picklist fields from the shortcode.
+				if ( is_array( $picklist_array ) && ! empty( $picklist_array ) ) {
+					foreach ( $picklist_array as $picklist_field ) {
+						// By default shortcode key will be replace by all lower case.
+						$shortcode_key = strtolower( $picklist_field );
+					?>
+						<div id="js-search-<?php echo esc_attr( $picklist_field ); ?>" class="jobscience-picklist-filter">
+							<select>
+								<?php
+								// If the attribute is empty, then call the function to get all value.
+								if ( ! isset( $attribute[ $shortcode_key ] ) ) {
+									// Call the function to create the meta key.
+									$meta_key = jobscience_create_meta_key( $picklist_field );
+									$search = jobscience_get_dept_loc_function( $meta_key );
+									// Set $search_count, add +1 for the extra option which will select all location/department/Job Function.
+									$search_count = count( $search ) + 1;
+								} else {
+									$search = explode( '  ,  ', $attribute[ $shortcode_key ] );
+									$search_count = count( $search );
+								}
 
-					// Run a loop for the rss tag.
-					foreach ( $rss_tag as $tag ) {
-						// Check  the tag is present in the $search_array.
-						if ( in_array( $tag['tag'], $search_array ) ) {
-							$search_key = strtolower( str_replace( array( 'ts2__Job_', 'ts2__', '__c', '_' ), array( '', '', '', '-' ), $tag['tag'] ) );
-				?>
-							<div class="js-search-<?php echo esc_attr( $search_key ); ?>">
-								<select>
-									<?php
-									// If the attribute is empty, then call the function to get all value.
-									if ( '' === $attribute[ $search_key ] ) {
-										// Create the meta key.
-										$meta_key = 'js_job_' . strtolower( str_replace( ' ', '_', $tag['custom_name'] ) );
-										$search = jobscience_get_dept_loc_function( $meta_key );
-										// Set $search-count, add +1 for the extra option which will select all location/department/Job Function.
-										$search_count = count( $search ) + 1;
-									} else {
-										$search = explode( ' , ', $attribute[ $search_key ] );
-										$search_count = count( $search );
-									}
-
-									// If the search count is not 1 then display 1st option.
-									if ( 1 !== $search_count ) {
-									?>
-										<option value="<?php echo esc_attr( $attribute[ $search_key ] ); ?>">Pick <?php echo esc_attr( ucwords( $tag['custom_name'] ) ); ?></option>
-									<?php
-									}
-
-									// Create search select field.
-									if ( is_array( $search ) ) {
-										// Run a loop to print all option.
-										foreach ( $search as $key => $value ) {
-									?>
-											<option value="<?php echo esc_attr( $value ); ?>"><?php echo esc_attr( $value ); ?></option>
-									<?php
-										}
-									}
+								// If the search count is not 1 then display 1st option.
+								if ( 1 !== $search_count ) {
+									// Call the function to get the Custom name.
+									$custom_name = jobscience_get_custom_name( $picklist_field );
+									$all_picklist_value = isset( $attribute[ $shortcode_key ] ) ? $attribute[ $shortcode_key ] : '';
 								?>
-								</select>
-							</div>
-				<?php
-						}
+									<option value="<?php echo esc_attr( $all_picklist_value ); ?>">Pick <?php echo esc_attr( ucwords( $custom_name ) ); ?></option>
+								<?php
+								}
+
+								// Create search select field.
+								if ( is_array( $search ) ) {
+									// Run a loop to print all option.
+									foreach ( $search as $key => $value ) {
+								?>
+										<option value="<?php echo esc_attr( $value ); ?>"><?php echo esc_attr( $value ); ?></option>
+								<?php
+									}
+								}
+							?>
+							</select>
+						</div>
+					<?php
 					}
 				}
 				?>
