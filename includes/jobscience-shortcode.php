@@ -9,10 +9,9 @@
 
 /**
  * Shortcode function.
- * @param array $atts Shortcode attributes.
+ * @param array $attribute Shortcode attributes.
  */
 function jobscience_jobscience_shortcode( $attribute ) {
-	// Save all attribute of the shortcode.
 	// Include the function file.
 	require_once( JS_PLUGIN_DIR . '/includes/jobscience-functions.php' );
 
@@ -31,6 +30,17 @@ function jobscience_jobscience_shortcode( $attribute ) {
 	$picklist = trim( $attribute['picklist'] );
 	$picklist_array = explode( '  ,  ', $picklist );
 
+	// Create an associative array with the attribute value of all picklist.
+	$picklist_attribute = array();
+	if ( is_array( $picklist_array ) && ! empty( $picklist_array ) ) {
+		foreach ( $picklist_array as $key => $value ) {
+			// By default shortcode key will be replace by all lower case.
+			$shortcode_key = strtolower( $value );
+			$all_picklist_attribute = isset( $attribute[ $shortcode_key ] ) ? $attribute[ $shortcode_key ] : '';
+			$picklist_attribute[ $value ] = $all_picklist_attribute;
+		}
+	}
+
 	// Set the page per job variable.
 	$job_per_page = get_option( 'js_total_number', 10 );
 
@@ -38,12 +48,12 @@ function jobscience_jobscience_shortcode( $attribute ) {
 	$offset = 0;
 
 	// Call the function to get all matching job.
-	//$results = jobscience_get_matching_job( $attribute['department'], $attribute['location'], $attribute['function'], '', $offset, $job_per_page, false );
+	$results = jobscience_get_matching_job( $picklist_attribute, '', $offset, $job_per_page, false );
 	// Call the function to get the total number of matching job,
 	// Pass offset and job per page parameters as false
 	// Pass $match parameter as true so that it return total matching job
 	// Passing empty string for search.
-	//$matched = jobscience_get_matching_job( $attribute['department'], $attribute['location'], $attribute['function'], '', false, false, true );
+	$matched = jobscience_get_matching_job( $picklist_attribute, '', false, false, true );
 
 	// Start the internal buffer to save the html in the buffer.
 	ob_start();
@@ -56,6 +66,8 @@ function jobscience_jobscience_shortcode( $attribute ) {
 		?>
 			<input type="hidden" value="<?php echo esc_attr( $position ); ?>" class="js-filed-postition" />
 			<input type="hidden" value="<?php echo absint( $job_per_page ); ?>" class="js-post-per-page" />
+			<input type="hidden" value="<?php echo esc_attr( $picklist ); ?>" class="js-picklists-filter" />
+			<input type="hidden" id="jobscience-search-nonce" value="<?php echo wp_create_nonce( 'jobscience_search_nonce' ) ?>" />
 		</div>
 		<div id="js-all-job">
 			<a href="" ><button>All Jobs</button></a>

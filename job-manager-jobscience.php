@@ -273,20 +273,24 @@ function jobscience_job_template_menu() {
  * Ajax function for the shortcode pagination.
  */
 function jobscience_pagination_search_callback() {
+	// Check nonce.
+	check_ajax_referer( 'jobscience_search_nonce', 'search_nonce' );
+
+	// Remove slashes.
+	$ajax_data = wp_unslash( $_POST );
 	// Collect all data from the $_POST.
-	$departments = isset( $_POST['department'] ) ? stripslashes( $_POST['department'] ) : '';
-	$locations = isset( $_POST['location'] ) ? stripslashes( $_POST['location'] ) : '';
-	$function = isset( $_POST['job_function'] ) ? stripslashes( $_POST['job_function'] ) : '';
-	$search = isset( $_POST['search'] ) ? stripslashes( $_POST['search'] ) : '';
-	$js_post_per_page = isset( $_POST['js_post_per_page'] ) ? $_POST['js_post_per_page'] : 10;
-	$offset = isset( $_POST['offset'] ) ? $_POST['offset'] : 0;
-	$position = isset( $_POST['position'] ) ? $_POST['position'] : 'horizontally';
+	$picklist_fields = isset( $ajax_data['picklist_fields'] ) ? $ajax_data['picklist_fields'] : '';
+	$picklist_attribute = isset( $ajax_data['picklist_attribute'] ) ? $ajax_data['picklist_attribute'] : array();
+	$search = isset( $ajax_data['search'] ) ? $ajax_data['search'] : '';
+	$js_post_per_page = isset( $ajax_data['js_post_per_page'] ) ? $ajax_data['js_post_per_page'] : 10;
+	$offset = isset( $ajax_data['offset'] ) ? $ajax_data['offset'] : 0;
+	$position = isset( $ajax_data['position'] ) ? $ajax_data['position'] : 'horizontally';
 
 	// Include the function file.
 	require_once( JS_PLUGIN_DIR . '/includes/jobscience-functions.php' );
 
 	// Call the function get all matching jobs.
-	$results = jobscience_get_matching_job( $departments, $locations, $function, $search, $offset, $js_post_per_page, false );
+	$results = jobscience_get_matching_job( $picklist_attribute, $search, $offset, $js_post_per_page, false );
 
 	// Start the jog listing page HTML creation.
 	$output = '';
@@ -308,15 +312,15 @@ function jobscience_pagination_search_callback() {
 			$apply_link = str_replace( 'ts2__jobdetails?', 'ts2__Register?', $apply_link );
 
 			$row = $key + 1;
-			$output .= '<div class="js-job-row-' . $row . ' js-job ' . $position . '">';
-			$output .= '<div id="js-job-col-1" class="js-job-detail ' . $position . '">';
+			$output .= '<div class="js-job-row-' . esc_attr( $row ) . ' js-job ' . esc_attr( $position ) . '">';
+			$output .= '<div id="js-job-col-1" class="js-job-detail ' . esc_attr( $position ) . '">';
 			// If title is not empty then add the title.
 			if ( ! empty( $title ) ) {
 				$output .= '<p class="js-job-title">';
-					$output .= '<a href="' . $apply_link . '">';
-						$output .= ucwords( $title );
+					$output .= '<a href="' . esc_url( $apply_link ) . '">';
+						$output .= esc_attr( ucwords( $title ) );
 					$output .= '</a></p>';
-					$output .= '<input type="hidden" value="' . $id . '" class="js-post-id" />';
+					$output .= '<input type="hidden" value="' . absint( $id ) . '" class="js-post-id" />';
 			}
 			$output .= '</div>';
 
@@ -337,14 +341,14 @@ function jobscience_pagination_search_callback() {
 					}
 
 					$column = $col + 2;
-					$output .= '<div id="js-job-col-' . $column . '" class="js-job-detail ' . $position . '" >';
-						$output .= '<p>' . $meta_value . '</p>';
+					$output .= '<div id="js-job-col-' . esc_attr( $column ) . '" class="js-job-detail ' . esc_attr( $position ) . '" >';
+						$output .= '<p>' . esc_attr( $meta_value ) . '</p>';
 					$output .= '</div>';
 				}
 			}
 
-			$output .= '<div id="js-job-col-last" class="js-job-detail ' . $position . '">';
-				$output .= '<a href="' . $apply_link . '" target="_blank" ><button>Apply</button></a>';
+			$output .= '<div id="js-job-col-last" class="js-job-detail ' . esc_attr( $position ) . '">';
+				$output .= '<a href="' . esc_url( $apply_link ) . '" target="_blank" ><button>Apply</button></a>';
 			$output .= '</div>';
 			$output .= '<div class="js-job-clear-float"></div>';
 			$output .= '</div>';
@@ -356,7 +360,7 @@ function jobscience_pagination_search_callback() {
 	$return = array();
 
 	// Call the function to get the count of matching job, pass offset and job per page parameters as false and $match parameter as true so that it return total matching job.
-	$matched = jobscience_get_matching_job( $departments, $locations, $function, $search, false, false, true );
+	$matched = jobscience_get_matching_job( $picklist_attribute, $search, false, false, true );
 
 	// Set the pagination html.
 	$page_number = ( $offset / $js_post_per_page ) + 1;
@@ -527,42 +531,6 @@ function jobscience_get_single_job() {
 
 add_action( 'wp_ajax_get_single_job', 'jobscience_get_single_job' );
 add_action( 'wp_ajax_nopriv_get_single_job', 'jobscience_get_single_job' );
-
-/**
- * Shortcode Ajax call function for the reset pagination section.
- */
-function jobscience_pagination_reset_callback() {
-	// Collect all data from the $_POST.
-	$departments = isset( $_POST['department'] ) ? stripslashes( $_POST['department'] ) : '';
-	$locations = isset( $_POST['location'] ) ? stripslashes( $_POST['location'] ) : '';
-	$function = isset( $_POST['job_function'] ) ? stripslashes( $_POST['job_function'] ) : '';
-	$search = isset( $_POST['search'] ) ? stripslashes( $_POST['search'] ) : '';
-	$js_post_per_page = isset( $_POST['js_post_per_page'] ) ? $_POST['js_post_per_page'] : 10;
-
-	// Include the function file.
-	require_once( JS_PLUGIN_DIR . '/includes/jobscience-functions.php' );
-
-	// Call the function to get the count of matching job, pass offset and job per page parameters as false and $match parameter as true so that it return total matching job.
-	$matched = jobscience_get_matching_job( $departments, $locations, $function, $search, false, false, true );
-
-	// Set the total number of page.
-	if ( 0 !== $matched % $js_post_per_page ) {
-		$pagination = intval( $matched / $js_post_per_page ) + 1;
-	} else {
-		$pagination = intval( $matched / $js_post_per_page );
-	}
-
-	// Create the return array.
-	$return = array(
-		'match' => $matched,
-		'pagination' => $pagination,
-	);
-	echo json_encode( $return );
-	wp_die();
-}
-
-add_action( 'wp_ajax_pagination_reset', 'jobscience_pagination_reset_callback' );
-add_action( 'wp_ajax_nopriv_pagination_reset', 'jobscience_pagination_reset_callback' );
 
 // Add plugin activation hook.
 register_activation_hook( __FILE__, 'jobscience_activation' );

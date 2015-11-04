@@ -318,65 +318,44 @@ function jobscience_create_meta_key( $rss_feed_tag ) {
  * @param int    $job_per_page job per page.
  * @param int    $match Number of matched jobs.
  */
-function jobscience_get_matching_job( $department, $location, $function, $search, $offset, $job_per_page, $match ) {
+function jobscience_get_matching_job( $picklist_attribute, $search, $offset, $job_per_page, $match ) {
 	global $wpdb;
 	$join = '';
 	$where = " WHERE
 					post_type = 'jobscience_job'
 					AND
 					post_status = 'publish' ";
-	$department_array = array();
-	$location_array = array();
-	$function_array = array();
+	$merge_array = array();
 	$search_array = array();
 
-	// If $department is not null then explode it in array and create SQL join and where section.
-	$department = trim( $department );
-	if ( '' !== $department ) {
-		// Call the function to get the meta key.
-		$dept_meta_key = jobscience_create_meta_key( 'ts2__Department__c' );
 
-		$department_array = explode( ' , ', $department );
-		$join .= ' INNER JOIN
-					wp_postmeta meta1
-					ON post.ID = meta1.post_id ';
+	if ( is_array( $picklist_attribute ) && !empty( $picklist_attribute ) ) {
+		$loop_count = 1;
+		foreach ( $picklist_attribute as $picklist_tag => $picklist_field ) {
+			// Call the function to create the meta key.
+			$picklist_meta_key = jobscience_create_meta_key( $picklist_tag );
 
-		$where .= " AND
-					meta1.meta_key = '" . $dept_meta_key . "'
+			// Create the alias name of the meta table.
+			$meta_alias = 'meta_table_' . $loop_count;
+			$loop_count++;
+
+			$picklist_value_array = array();
+			if ( false != trim( $picklist_field ) ) {
+				$picklist_value_array = explode( '  ,  ', $picklist_field );
+
+
+			$join .= ' INNER JOIN
+					wp_postmeta ' . $meta_alias . '
+					ON post.ID = ' . $meta_alias . '.post_id ';
+
+			$where .= " AND
+					" . $meta_alias . ".meta_key = '" . $picklist_meta_key . "'
 					AND
-					meta1.meta_value IN (" . implode( ', ', array_fill( 0, count( $department_array ), '%s' ) ) . ') ';
-	}
+					" . $meta_alias . ".meta_value IN (" . implode( ', ', array_fill( 0, count( $picklist_value_array ), '%s' ) ) . ') ';
 
-	// If $location is not null then explode it in array and create SQL join and where section.
-	$location = trim( $location );
-	if ( '' !== $location ) {
-		// Call the function to get the meta key.
-		$loc_meta_key = jobscience_create_meta_key( 'ts2__Location__c' );
-
-		$location_array = explode( ' , ', $location );
-		$join .= ' INNER JOIN
-					wp_postmeta meta2
-					ON post.ID = meta2.post_id ';
-		$where .= " AND
-					meta2.meta_key = '" . $loc_meta_key . "'
-					AND
-					meta2.meta_value IN (" . implode( ', ', array_fill( 0, count( $location_array ), '%s' ) ) . ')';
-	}
-
-	// If $function is not null then explode it in array and create SQL join and where section.
-	$function = trim( $function );
-	if ( '' !== $function ) {
-		// Call the function to get the meta key.
-		$function_meta_key = jobscience_create_meta_key( 'ts2__Job_Function__c' );
-
-		$function_array = explode( ' , ', $function );
-		$join .= ' INNER JOIN
-					wp_postmeta meta3
-					ON post.ID = meta3.post_id ';
-		$where .= " AND
-					meta3.meta_key = '" . $function_meta_key . "'
-					AND
-					meta3.meta_value IN (" . implode( ', ', array_fill( 0, count( $function_array ), '%s' ) ) . ')';
+			$merge_array = array_merge( $merge_array, $picklist_value_array );
+		}
+		}
 	}
 
 	// If the $search is not empty then join meta table for the search.
@@ -392,7 +371,7 @@ function jobscience_get_matching_job( $department, $location, $function, $search
 					post.post_content LIKE %s )';
 	}
 
-	$merge_array = array_merge( $department_array, $location_array, $function_array, $search_array, $search_array, $search_array );
+	$merge_array = array_merge( $merge_array, $search_array, $search_array, $search_array );
 
 	// Create the full SQL.
 	// If $match is true then select the total jobs.

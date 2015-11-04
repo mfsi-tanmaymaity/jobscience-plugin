@@ -118,24 +118,33 @@ function jobscience_image_link_replace() {
 // Pagination Ajax call function.
 function jobscience_pagination_callback( page_no, obj, call_type ) {
 	// Collect the department and location of the shortcode.
-	var department = obj.find( ".js-search-department" ).children( "select" ).val();
-	var location = obj.find( ".js-search-location" ).children( "select" ).val();
-	var job_function = obj.find( ".js-search-function" ).children( "select" ).val();
 	var js_post_per_page = obj.find( ".js-post-per-page" ).val();
 	var offset = ( page_no - 1 ) * js_post_per_page;
 	var search = obj.find( ".js-search-text-field" ).val();
 	var position = obj.find( ".js-filed-postition" ).val();
+	var picklist_fields = obj.find( ".js-picklists-filter" ).val();
+	var search_nonce = jQuery( "#jobscience-search-nonce" ).val();
+	var picklist_attribute = {};
+
+	// // Create an array with the attribute value of all picklist.
+	jQuery( ".jobscience-picklist-filter", obj ).each( function() {
+		var picklist_id = jQuery( this ).attr( 'id' );
+		// Remove 'js-search-' from the starting. length of 'js-search-' is 10.
+		picklist_id = picklist_id.substring( 10 );
+		var picklist_value= jQuery( this ).children('select').val();
+		picklist_attribute[picklist_id] = picklist_value;
+	});
 
 	// Create the data variable to pass all value in the Ajax.
 	var data = {
 		action: 'shortcode_pagination_search',
-		department: department,
-		location: location,
-		job_function: job_function,
+		search_nonce: search_nonce,
 		search: search,
 		js_post_per_page: js_post_per_page,
 		offset: offset,
 		position: position,
+		picklist_fields: picklist_fields,
+		picklist_attribute: picklist_attribute,
 	}
 
 	// Call the ajax loader.
