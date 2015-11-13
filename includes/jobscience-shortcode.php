@@ -7,6 +7,9 @@
  * @package		: Job Manager JobScience plugin
  **/
 
+// Prevent direct access.
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * Shortcode function.
  * @param array $attribute Shortcode attributes.

@@ -7,6 +7,9 @@
  * @package		: Job Manager JobScience plugin
  **/
 
+// Prevent direct access.
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 /**
  * Return the format of the template.
  * @param int $format Number of format.

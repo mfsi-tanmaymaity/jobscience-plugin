@@ -122,7 +122,6 @@ function jobscience_pagination_callback( page_no, obj, call_type ) {
 	var offset = ( page_no - 1 ) * js_post_per_page;
 	var search = obj.find( ".js-search-text-field" ).val();
 	var position = obj.find( ".js-filed-postition" ).val();
-	var picklist_fields = obj.find( ".js-picklists-filter" ).val();
 	var search_nonce = jQuery( "#jobscience-search-nonce" ).val();
 	var picklist_attribute = {};
 
@@ -143,7 +142,6 @@ function jobscience_pagination_callback( page_no, obj, call_type ) {
 		js_post_per_page: js_post_per_page,
 		offset: offset,
 		position: position,
-		picklist_fields: picklist_fields,
 		picklist_attribute: picklist_attribute,
 	}
 

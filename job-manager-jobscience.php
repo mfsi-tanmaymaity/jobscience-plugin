@@ -9,6 +9,9 @@
  * @package: Job Manager JobScience plugin
  **/
 
+// Prevent direct access.
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 // Define the plugin path.
 define( 'JS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
@@ -279,12 +282,11 @@ function jobscience_pagination_search_callback() {
 	// Remove slashes.
 	$ajax_data = wp_unslash( $_POST );
 	// Collect all data from the $_POST.
-	$picklist_fields = isset( $ajax_data['picklist_fields'] ) ? $ajax_data['picklist_fields'] : '';
 	$picklist_attribute = isset( $ajax_data['picklist_attribute'] ) ? $ajax_data['picklist_attribute'] : array();
-	$search = isset( $ajax_data['search'] ) ? $ajax_data['search'] : '';
-	$js_post_per_page = isset( $ajax_data['js_post_per_page'] ) ? $ajax_data['js_post_per_page'] : 10;
-	$offset = isset( $ajax_data['offset'] ) ? $ajax_data['offset'] : 0;
-	$position = isset( $ajax_data['position'] ) ? $ajax_data['position'] : 'horizontally';
+	$search = isset( $ajax_data['search'] ) ? sanitize_text_field( $ajax_data['search'] ) : '';
+	$js_post_per_page = isset( $ajax_data['js_post_per_page'] ) ? absint( $ajax_data['js_post_per_page'] ) : 10;
+	$offset = isset( $ajax_data['offset'] ) ? absint( $ajax_data['offset'] ) : 0;
+	$position = isset( $ajax_data['position'] ) ? sanitize_text_field( $ajax_data['position'] ) : 'horizontally';
 
 	// Include the function file.
 	require_once( JS_PLUGIN_DIR . '/includes/jobscience-functions.php' );

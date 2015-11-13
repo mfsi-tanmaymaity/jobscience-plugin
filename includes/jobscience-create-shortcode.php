@@ -7,6 +7,9 @@
  * @package		: Job Manager JobScience plugin
  **/
 
+// Prevent direct access.
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 // Include the function file.
 require_once( JS_PLUGIN_DIR . '/includes/jobscience-functions.php' );
 

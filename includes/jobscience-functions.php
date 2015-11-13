@@ -15,6 +15,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * @param string $username Username of salesforce.
  * @param string $password Password of salesforce.
  * @param string $security Security Token the salesforce.
+ * @return Boolean true for success or string with error message for fail.
  */
 function jobscience_salesforce_configuration( $username, $password, $security ) {
 	require_once( JS_PLUGIN_DIR . '/soapclient/SforcePartnerClient.php' );
@@ -42,6 +43,7 @@ function jobscience_salesforce_configuration( $username, $password, $security ) 
 /**
  * Hook Function to reset the feedcache time.
  * @param int $seconds Second.
+ * @return int cache time.
  */
 function jobscience_reset_feed_cache() {
 	// Change the default feed cache recreation period.
@@ -52,6 +54,7 @@ function jobscience_reset_feed_cache() {
  * SOAP Call to get all active jobs from salesforce.
  * @param string $url URL for the RSS Feed.
  * @param int    $new_job_id job id.
+ * @return string on fail for error message or array on success for total number of job.
  */
 function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = null ) {
 	// Get the rss tags name from option table.
@@ -164,11 +167,12 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = null ) {
 
 		// If the $new_job_idis null, so the function is not calling from outbound messase.
 		if ( is_null( $new_job_id ) ) {
-			// Change the post status as draft of all exist post which are "jobscience_job" post type.
-			$wpdb->query( "UPDATE `wp_posts` SET post_status='draft' WHERE post_type = 'jobscience_job'" );
+			// Collect the post id for all exist post which are "jobscience_job" post type.
+			$all_job_post_id = $wpdb->get_col( "SELECT ID FROM $wpdb->posts WHERE post_type = 'jobscience_job'" );
 		}
 
 		// Run a loop on the $queryResult and create new post.
+		$post_count = 0;
 		foreach ( $jobs as $record ) {
 			// Check the ID is already present or not.
 			$job_id = $record['id'];
@@ -207,6 +211,11 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = null ) {
 
 				// Update the post into the database.
 				wp_update_post( $old_post );
+
+				// Remove the Post ID from the array.
+				if ( isset( $all_job_post_id ) && is_array( $all_job_post_id ) && ( $array_key = array_search( $post_id, $all_job_post_id ) ) !== false ) {
+					unset( $all_job_post_id[ $array_key ] );
+				}
 			}
 
 			// Run a loop for the rss tag.
@@ -217,10 +226,20 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = null ) {
 			// Insert all meta field.
 			update_post_meta( $post_id, 'js_job_id', $record['id'] );
 			update_post_meta( $post_id, 'js_job_siteURL', $record['link'] );
+			// Increate the post count.
+			$post_count++;
 		}
+
+		// Delete all post which are not present on the RSS Feed.
+		if ( isset( $all_job_post_id ) && is_array( $all_job_post_id ) && ! empty( $all_job_post_id ) ) {
+			foreach ( $all_job_post_id as $value ) {
+				wp_delete_post( $value, true );
+			}
+		}
+
 		$wpdb->query( 'COMMIT;' );
 		// Return total jobs.
-		return $maxitems;
+		return $post_count;
 	} catch ( Exception $e ) {
 		return $e;
 	}
@@ -229,6 +248,7 @@ function jobscience_get_salesforce_jobs_rss( $url, $new_job_id = null ) {
 /**
  * Function get the Custom name from the RSS Feed tag name.
  * @param string $rss_feed_tag RSS Feed Tag name.
+ * @return boolean false on fail or string on success for the Custom name.
  */
 function jobscience_get_custom_name( $rss_feed_tag ) {
 	// Get the rss tags name from option table.
@@ -248,6 +268,7 @@ function jobscience_get_custom_name( $rss_feed_tag ) {
 /**
  * Get all departments/locations/job-functions from the postmeta table.
  * @param string $meta_key The Meta Key.
+ * @return array all meta value of the meta key.
  */
 function jobscience_get_dept_loc_function( $meta_key ) {
 	global $wpdb;
@@ -272,6 +293,7 @@ function jobscience_get_dept_loc_function( $meta_key ) {
 
 /**
  * Get the total number of open position.
+ * @return int Number of job.
  */
 function jobscience_get_job_count() {
 	global $wpdb;
@@ -291,6 +313,7 @@ function jobscience_get_job_count() {
 /**
  * Function Create the meta key name from the RSS Feed tag name.
  * @param string $rss_feed_tag RSS Feed Tag name.
+ * @return boolean false on fail or string meta key on success.
  */
 function jobscience_create_meta_key( $rss_feed_tag ) {
 	// Get the rss tags name from option table.
@@ -310,13 +333,12 @@ function jobscience_create_meta_key( $rss_feed_tag ) {
 
 /**
  * Function for get the matching job or get the count of matching job.
- * @param string $department Job Department.
- * @param string $location Job Location.
- * @param string $function Job Function.
+ * @param array  $picklist_attribute All Picklist Value.
  * @param string $search Keyword for search.
  * @param string $offset Offset for the pagination.
  * @param int    $job_per_page job per page.
  * @param int    $match Number of matched jobs.
+ * @return int matching job count if $match is true or array matching jobs if $match is false.
  */
 function jobscience_get_matching_job( $picklist_attribute, $search, $offset, $job_per_page, $match ) {
 	global $wpdb;
@@ -343,18 +365,17 @@ function jobscience_get_matching_job( $picklist_attribute, $search, $offset, $jo
 			if ( false != trim( $picklist_field ) ) {
 				$picklist_value_array = explode( '  ,  ', $picklist_field );
 
+				$join .= ' INNER JOIN
+						wp_postmeta ' . $meta_alias . '
+						ON post.ID = ' . $meta_alias . '.post_id ';
 
-			$join .= ' INNER JOIN
-					wp_postmeta ' . $meta_alias . '
-					ON post.ID = ' . $meta_alias . '.post_id ';
+				$where .= " AND
+						" . $meta_alias . ".meta_key = '" . $picklist_meta_key . "'
+						AND
+						" . $meta_alias . ".meta_value IN (" . implode( ', ', array_fill( 0, count( $picklist_value_array ), '%s' ) ) . ') ';
 
-			$where .= " AND
-					" . $meta_alias . ".meta_key = '" . $picklist_meta_key . "'
-					AND
-					" . $meta_alias . ".meta_value IN (" . implode( ', ', array_fill( 0, count( $picklist_value_array ), '%s' ) ) . ') ';
-
-			$merge_array = array_merge( $merge_array, $picklist_value_array );
-		}
+				$merge_array = array_merge( $merge_array, $picklist_value_array );
+			}
 		}
 	}
 
@@ -371,7 +392,8 @@ function jobscience_get_matching_job( $picklist_attribute, $search, $offset, $jo
 					post.post_content LIKE %s )';
 	}
 
-	$merge_array = array_merge( $merge_array, $search_array, $search_array, $search_array );
+	// Passing $search_array twice as we are searching same text for two field, 1 for job title and other for job content.
+	$merge_array = array_merge( $merge_array, $search_array, $search_array );
 
 	// Create the full SQL.
 	// If $match is true then select the total jobs.
@@ -418,6 +440,7 @@ function jobscience_get_matching_job( $picklist_attribute, $search, $offset, $jo
 /**
  * Function to get all meta key of the custom post type (job).
  * It will return all present meta keys for any job.
+ * @return array All meta key of the custom post type.
  */
 function jobscience_get_all_meta_key() {
 	global $wpdb;
@@ -443,6 +466,7 @@ function jobscience_get_all_meta_key() {
 /**
  * Function to get all meta key of the custom post type (job).
  * It will return the mets keys which are set by Admin, from the RSS Tag Form in Plugin Configure page.
+ * @return boolean false on fail or array all meta key set by admin on success.
  */
 function jobscience_get_meta_key() {
 	// Get the rss tags name from option table.
@@ -464,6 +488,7 @@ function jobscience_get_meta_key() {
 /**
  * This function will return the rss tag details (rss tag, custom name, field type) of any field.
  * @param text $field_meta_key Meta Key of the field.
+ * @return array rss tag detail.
  */
 function jobscience_get_rss_tag_details( $field_meta_key ) {
 	// Get the rss tags name from option table.
@@ -501,6 +526,7 @@ function jobscience_update_job_meta( $post_id, $meta_key, $meta_value ) {
  * Get the post ID from the meta value.
  * @param string $meta_value The meta value.
  * @param string $meta_key The meta key.
+ * @return int Post ID.
  */
 function jobscience_get_post_id( $meta_value, $meta_key ) {
 	global $wpdb;
@@ -513,6 +539,7 @@ function jobscience_get_post_id( $meta_value, $meta_key ) {
 /**
  * Returned response to SFDC and to stop resend.
  * @param boolean $returned_msg Send true for the outbound message.
+ * @return string xlm message for outbound message.
  */
 function jobscience_outbound_respond( $returned_msg ) {
 	return '<?xml version="1.0" encoding="UTF-8"?>
@@ -529,6 +556,7 @@ function jobscience_outbound_respond( $returned_msg ) {
  * Function to check the positing integer number.
  * @param string $number String which need to check for number or not.
  * @param int    $return_value Return value if not number.
+ * @return int number.
  */
 function jobscience_check_number( $number, $return_value ) {
 	// Check numeric or not.
@@ -550,6 +578,7 @@ function jobscience_check_number( $number, $return_value ) {
  * @param int $matched matched job.
  * @param int $job_per_page Job per page.
  * @param int $current_page current pagination number.
+ * @return string html for the pagination.
  */
 function jobscience_pagination_create( $matched, $job_per_page, $current_page ) {
 	// Calculate the total number number on page.
