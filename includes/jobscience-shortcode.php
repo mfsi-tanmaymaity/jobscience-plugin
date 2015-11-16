@@ -28,10 +28,14 @@ function jobscience_jobscience_shortcode( $attribute ) {
 
 	// If the picklist fields attribute not present on the short code then return flase.
 	if ( ! isset( $attribute['picklist'] ) ) {
-		return '<strong>Invalid Shortcode, Picklist attribute not present.<strong>';
+		return '<strong>Invalid Shortcode, Picklist attribute not present.</strong>';
 	}
 	$picklist = trim( $attribute['picklist'] );
+	if ( ! empty( $picklist ) )  {
 	$picklist_array = explode( '  ,  ', $picklist );
+	} else {
+		$picklist_array = array();
+	}
 
 	// Create an associative array with the attribute value of all picklist.
 	$picklist_attribute = array();

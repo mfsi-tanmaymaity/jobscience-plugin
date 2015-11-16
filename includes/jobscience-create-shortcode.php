@@ -36,6 +36,8 @@ if ( isset( $_POST['picklist_nonce_name'] ) && wp_verify_nonce( $_POST['picklist
 	// Sanitize form data.
 	if ( isset( $form_data['jobscience_selected_picklist'] ) && is_array( $form_data['jobscience_selected_picklist'] ) ) {
 		$selected_picklists = array_map( 'sanitize_text_field', $form_data['jobscience_selected_picklist'] );
+	} else {
+		$selected_picklists = array();
 	}
 }
 ?>

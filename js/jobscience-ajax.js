@@ -56,6 +56,8 @@ jQuery( document ).ready( function() {
 		// Call the ajax.
 		jQuery.post( the_ajax_script.ajaxurl, data, function( response ){
 			jQuery( ".jobscience-result" ).html( response );
+			// Scroll to top of the page.
+			jQuery( "html, body" ).animate( { scrollTop: 0 }, "slow" );
 			// Hide the pagination section.
 			jQuery( ".jobscience-pagination-section, .jobscience-result-heading" ).hide();
 
